@@ -9,8 +9,13 @@ public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public UnityEvent mouseEnter = new UnityEvent();
     public UnityEvent mouseExit = new UnityEvent();
 
-    public GameElement() {
+    private void Awake()
+    {
         value = Random.Range(1, 10);
+    }
+
+    public GameElement() {
+        
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
@@ -20,4 +25,6 @@ public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void OnPointerExit(PointerEventData eventData) {
         mouseExit.Invoke();
     }
+
+
 }
