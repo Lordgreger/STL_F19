@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class GameGrid : MonoBehaviour {
 
@@ -11,11 +12,20 @@ public class GameGrid : MonoBehaviour {
     State state;
     List<GameElement> currentSelection = new List<GameElement>();
     public GameObject elementPrefab;
-    static float gridDistance = 1.1f;
+    static float gridDistance = 50.0f;
 
-    private void Start()
+    private void Awake()
     {
         InitGrid();
+        // Temperai test addings 
+        //AddToColumn(1, 0);
+        //AddToColumn(8, 2);
+        //AddToColumn(3, 2);
+    }
+
+    public int GetColumnCount()
+    {
+        return grid.GetLength(0);
     }
 
     void InitGrid()
@@ -26,10 +36,26 @@ public class GameGrid : MonoBehaviour {
             {
                 GameElement ge = Instantiate(elementPrefab, transform).GetComponent<GameElement>();
                 grid[i, j] = ge;
-                ge.transform.position = new Vector3(i * gridDistance, j * gridDistance, 0);
+                RectTransform rt = ge.transform as RectTransform; 
+                rt.localPosition = new Vector3((i - (grid.GetLength(0) / 2)) * gridDistance, j * gridDistance, 0);
                 ge.gameObject.SetActive(false); 
             }
         }
+    }
+
+    public void AddToColumn(int value, int column)
+    {
+        for (int i = 0; i < grid.GetLength(1); i++)
+        {
+            if (!grid[column, i].gameObject.activeSelf)
+            {
+                grid[column, i].gameObject.SetActive(true);
+                grid[column, i].SetElement(value);
+                return;
+            }
+        }
+
+        
     }
 
     enum State {
