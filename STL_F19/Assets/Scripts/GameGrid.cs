@@ -14,8 +14,7 @@ public class GameGrid : MonoBehaviour {
     public GameObject elementPrefab;
     static float gridDistance = 50.0f;
 
-    private void Awake()
-    {
+    private void Awake() {
         InitGrid();
         // Temperai test addings 
         //AddToColumn(1, 0);
@@ -23,17 +22,13 @@ public class GameGrid : MonoBehaviour {
         //AddToColumn(3, 2);
     }
 
-    public int GetColumnCount()
-    {
+    public int GetColumnCount() {
         return grid.GetLength(0);
     }
 
-    void InitGrid()
-    {
-        for (int i = 0; i < grid.GetLength(0); i++)
-        {
-            for (int j = 0; j < grid.GetLength(1); j++)
-            {
+    void InitGrid() {
+        for (int i = 0; i < grid.GetLength(0); i++) {
+            for (int j = 0; j < grid.GetLength(1); j++) {
                 GameElement ge = Instantiate(elementPrefab, transform).GetComponent<GameElement>();
                 grid[i, j] = ge;
                 RectTransform rt = ge.transform as RectTransform; 
@@ -43,19 +38,14 @@ public class GameGrid : MonoBehaviour {
         }
     }
 
-    public void AddToColumn(int value, int column)
-    {
-        for (int i = 0; i < grid.GetLength(1); i++)
-        {
-            if (!grid[column, i].gameObject.activeSelf)
-            {
+    public void AddToColumn(int value, int column) {
+        for (int i = 0; i < grid.GetLength(1); i++) {
+            if (!grid[column, i].gameObject.activeSelf) {
                 grid[column, i].gameObject.SetActive(true);
                 grid[column, i].SetElement(value);
                 return;
             }
-        }
-
-        
+        } 
     }
 
     enum State {
