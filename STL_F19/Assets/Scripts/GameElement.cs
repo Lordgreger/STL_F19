@@ -5,11 +5,19 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using TMPro;
 
-public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
     public int value;
-    public UnityEvent mouseEnter = new UnityEvent();
+    public int column;
+    public int row;
+    public UnityEvent<GameElement> mouseEnter = new ElementEvent();
     public UnityEvent mouseExit = new UnityEvent();
     public TextMeshProUGUI text;
+
+    [System.Serializable]
+    public class ElementEvent : UnityEvent<GameElement> {
+
+    }
+
 
     //private void Start()
     //{
@@ -21,13 +29,13 @@ public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        mouseEnter.Invoke();
-        Debug.Log("pointer entered");
+        mouseEnter.Invoke(this);
+        //Debug.Log("pointer entered");
     }
 
     public void OnPointerExit(PointerEventData eventData) {
         mouseExit.Invoke();
-        Debug.Log("pointer exited");
+        //Debug.Log("pointer exited");
     }
 
     public void SetElement(int value)
@@ -36,4 +44,8 @@ public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         this.value = value;
     }
 
+    public void OnPointerDown(PointerEventData eventData) {
+        mouseEnter.Invoke(this);
+        //print("Adding first!");
+    }
 }

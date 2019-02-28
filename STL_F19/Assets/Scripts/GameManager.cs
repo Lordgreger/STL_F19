@@ -6,22 +6,73 @@ public class GameManager : MonoBehaviour {
 
     const float delayAddRandom = 1;
 
+    public Target target;
+    public GameGrid gg;
+
     State state;
     int currentTarget;
-    GameGrid gg;
 
     float timerAddRandom;
     bool runTimerAddRandom;
 
     private void Start() {
-        gg = GetComponent<GameGrid>();
-        setupGame();
+        state = State.notPlaying;
+        gg.selectionEvent.AddListener(onSelection);
     }
 
     private void Update() {
-        addNewRandomRoutine();  
+        runState(); 
     }
 
+    public void onSelection(List<GameElement> elements) {
+        //print("Got selections");
+        if (checkSolution(elements)) {
+            print("HEJ PETER!");
+            target.setNewTarget();
+            gg.removeElements(elements);
+        }
+    }
+
+    bool checkSolution(List<GameElement> elements) {
+        int sum = 0;
+        foreach (var e in elements) {
+            sum += e.value;
+        }
+
+        if (sum == target.targetValue) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public void startNewGame() {
+        if (state == State.playing)
+            return;
+
+        setupGame();
+        target.setNewTarget();
+        state = State.playing;
+        gg.enableSelection = true;
+    }
+
+    public void exitGame() {
+        Application.Quit();
+    }
+
+    #region States
+    void runState() {
+        if (state == State.notPlaying) {
+
+        }
+        else if (state == State.playing) {
+            addNewRandomRoutine();
+        }
+    }
+    #endregion
+
+    #region Misc
     void addNewRandomRoutine() {
         if (runTimerAddRandom) {
             if (timerAddRandom <= 0f) {
@@ -51,8 +102,8 @@ public class GameManager : MonoBehaviour {
     }
 
     enum State {
-        start,
-        playing,
-        score
+        notPlaying,
+        playing
     }
+    #endregion
 }
