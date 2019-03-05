@@ -12,34 +12,102 @@ public class GameGrid : MonoBehaviour {
     public UnityEvent loseEvent = new UnityEvent();
     public UnityEvent<List<GameElement>> selectionEvent = new SelectedEvent();
     public GameObject elementPrefab;
+    public Color normalColor;
+    public Color mouseOverColor;
+    public Color selectedColor;
+    public int[] selectorPos = new int[2] { 0, 0 };
 
     [System.Serializable]
     public class SelectedEvent : UnityEvent<List<GameElement>> {
 
     }
-
-    public bool enableSelection;
-
+    
     State state;
     List<GameElement> currentSelection = new List<GameElement>();
-    
-    public void onElementSelect(GameElement ge) {
-        if (!enableSelection)
-            return;
+
+    /*
+    public void onElementMouseIn(GameElement ge) {
+        //if (!enableSelection) {
+            //return;
+        //}
 
         if (state == State.selecting || Input.GetMouseButtonDown(0)) {
             currentSelection.Add(ge);
-            //Debug.Log("Added element with value: " + ge.value);
+        }
+
+        if (state == State.looking) {
+            ge.GetComponent<RawImage>().color = mouseOverColor;
         }
     }
 
-    private void Awake() {
+    public void onElementMouseOut(GameElement ge) {
+        //if (!enableSelection) {
+            //return;
+        //}
+
+        if (state == State.looking) {
+            ge.GetComponent<RawImage>().color = normalColor;
+        }
+    }
+    */
+
+    private void Start() {
         InitGrid();
-        enableSelection = false;
+        grid[selectorPos[0], selectorPos[1]].GetComponent<RawImage>().color = mouseOverColor;
+        //enableSelection = false;
     }
 
     private void Update() {
-        updateState();
+        handleInput();
+        //updateState();
+    }
+
+    private void handleInput() {
+
+        int[] selectorPrevPos = selectorPos;
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+            moveSelector(new int[] {-1, 0});
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow)) {
+            moveSelector(new int[] {1, 0});
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow)) {
+            moveSelector(new int[] {0, 1});
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow)) {
+            moveSelector(new int[] {0, -1});
+        }
+
+        //grid[selectorPrevPos[0], selectorPrevPos[1]].GetComponent<RawImage>().color = normalColor;
+
+        if (!(selectorPos[0] == selectorPrevPos[0] && selectorPos[1] == selectorPrevPos[1])) {
+            
+        }
+
+    }
+
+    private void moveSelector(int[] dir) {
+        selectorPos[0] += dir[0];
+        selectorPos[1] += dir[1];
+
+        if (selectorPos[0] >= grid.GetLength(0)) {
+            selectorPos[0] = grid.GetLength(0) - 1;
+        }
+
+        if (selectorPos[0] < 0) {
+            selectorPos[0] = 0;
+        }
+
+        if (selectorPos[1] >= grid.GetLength(1)) {
+            selectorPos[1] = grid.GetLength(1) - 1;
+        }
+
+        if (selectorPos[1] < 0) {
+            selectorPos[1] = 0;
+        }
+
+        grid[selectorPos[0], selectorPos[1]].GetComponent<RawImage>().color = mouseOverColor;
     }
 
     #region State
@@ -70,7 +138,10 @@ public class GameGrid : MonoBehaviour {
                 ge.gameObject.SetActive(false);
                 ge.column = i;
                 ge.row = j;
-                ge.mouseEnter.AddListener(onElementSelect);
+                //ge.mouseEnter.AddListener(onElementSelect);
+                //ge.mouseEnter.AddListener(onElementMouseIn);
+                //ge.mouseExit.AddListener(onElementMouseOut);
+                ge.GetComponent<RawImage>().color = normalColor;
             }
         }
     }

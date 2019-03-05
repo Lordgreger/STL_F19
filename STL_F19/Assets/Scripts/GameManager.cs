@@ -18,10 +18,13 @@ public class GameManager : MonoBehaviour {
     private void Start() {
         state = State.notPlaying;
         gg.selectionEvent.AddListener(onSelection);
+        //startNewGame();
     }
 
     private void Update() {
-        runState(); 
+        startNewGame();
+        runState();
+
     }
 
     public void onSelection(List<GameElement> elements) {
@@ -51,10 +54,11 @@ public class GameManager : MonoBehaviour {
         if (state == State.playing)
             return;
 
+        //gg.enableSelection = true;
+
         setupGame();
         target.setNewTarget();
         state = State.playing;
-        gg.enableSelection = true;
     }
 
     public void exitGame() {

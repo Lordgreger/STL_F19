@@ -10,7 +10,7 @@ public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public int column;
     public int row;
     public UnityEvent<GameElement> mouseEnter = new ElementEvent();
-    public UnityEvent mouseExit = new UnityEvent();
+    public UnityEvent<GameElement> mouseExit = new ElementEvent();
     public TextMeshProUGUI text;
 
     [System.Serializable]
@@ -34,7 +34,7 @@ public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        mouseExit.Invoke();
+        mouseExit.Invoke(this);
         //Debug.Log("pointer exited");
     }
 
