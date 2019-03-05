@@ -9,11 +9,12 @@ public class GameGrid : MonoBehaviour {
 
     GameElement[,] grid = new GameElement[6,8];
 
+    [HideInInspector]
     public UnityEvent loseEvent = new UnityEvent();
     public UnityEvent<List<GameElement>> selectionEvent = new SelectedEvent();
     public GameObject elementPrefab;
+    public GameObject selector;
     public Color normalColor;
-    public Color mouseOverColor;
     public Color selectedColor;
     public int[] selectorPos = new int[2] { 0, 0 };
 
@@ -21,51 +22,20 @@ public class GameGrid : MonoBehaviour {
     public class SelectedEvent : UnityEvent<List<GameElement>> {
 
     }
-    
-    State state;
+
     List<GameElement> currentSelection = new List<GameElement>();
-
-    /*
-    public void onElementMouseIn(GameElement ge) {
-        //if (!enableSelection) {
-            //return;
-        //}
-
-        if (state == State.selecting || Input.GetMouseButtonDown(0)) {
-            currentSelection.Add(ge);
-        }
-
-        if (state == State.looking) {
-            ge.GetComponent<RawImage>().color = mouseOverColor;
-        }
-    }
-
-    public void onElementMouseOut(GameElement ge) {
-        //if (!enableSelection) {
-            //return;
-        //}
-
-        if (state == State.looking) {
-            ge.GetComponent<RawImage>().color = normalColor;
-        }
-    }
-    */
 
     private void Start() {
         InitGrid();
-        grid[selectorPos[0], selectorPos[1]].GetComponent<RawImage>().color = mouseOverColor;
+        setSelectorPos(selectorPos);
         //enableSelection = false;
     }
 
     private void Update() {
         handleInput();
-        //updateState();
     }
 
-    private void handleInput() {
-
-        int[] selectorPrevPos = selectorPos;
-
+    private void handleInput() {  
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
             moveSelector(new int[] {-1, 0});
         }
@@ -79,15 +49,15 @@ public class GameGrid : MonoBehaviour {
             moveSelector(new int[] {0, -1});
         }
 
-        //grid[selectorPrevPos[0], selectorPrevPos[1]].GetComponent<RawImage>().color = normalColor;
-
-        if (!(selectorPos[0] == selectorPrevPos[0] && selectorPos[1] == selectorPrevPos[1])) {
+        if(Input.GetKey(KeyCode.A)) {
             
         }
-
     }
 
     private void moveSelector(int[] dir) {
+        int[] selectorPrevPos = new int[2];
+        selectorPos.CopyTo(selectorPrevPos, 0);
+
         selectorPos[0] += dir[0];
         selectorPos[1] += dir[1];
 
@@ -107,25 +77,25 @@ public class GameGrid : MonoBehaviour {
             selectorPos[1] = 0;
         }
 
-        grid[selectorPos[0], selectorPos[1]].GetComponent<RawImage>().color = mouseOverColor;
+        //if (!(selectorPos[0] == selectorPrevPos[0] && selectorPos[1] == selectorPrevPos[1])) {
+        //grid[selectorPos[0], selectorPos[1]].GetComponent<RawImage>().color = mouseOverColor;
+        //grid[selectorPrevPos[0], selectorPrevPos[1]].GetComponent<RawImage>().color = normalColor;
+        //}
+        setSelectorPos(selectorPos);
     }
 
-    #region State
-    void updateState() {
-        if (Input.GetMouseButtonDown(0)) {
-            state = State.selecting;
-        }
-        else if (Input.GetMouseButtonUp(0)) {
-            if (currentSelection.Count == 0)
-                return;
-
-            selectionEvent.Invoke(currentSelection);
-            //print(currentSelection.Count);
-            currentSelection.Clear();
-            state = State.looking;
-        }
+    private void setSelectorPos(int[] pos) {
+        selector.transform.localPosition = new Vector3((pos[0] - (grid.GetLength(0) / 2)) * gridDistance, pos[1] * gridDistance, 0);
     }
-    #endregion
+
+    private void addToSelected(int[] pos) {
+        currentSelection.Add(grid[selectorPos[0], selectorPos[1]]);
+    }
+
+    private void setSelected(int[] pos) {
+        currentSelection.Clear();
+        addToSelected(pos);
+    }
 
     #region Init
     void InitGrid() {
@@ -138,9 +108,6 @@ public class GameGrid : MonoBehaviour {
                 ge.gameObject.SetActive(false);
                 ge.column = i;
                 ge.row = j;
-                //ge.mouseEnter.AddListener(onElementSelect);
-                //ge.mouseEnter.AddListener(onElementMouseIn);
-                //ge.mouseExit.AddListener(onElementMouseOut);
                 ge.GetComponent<RawImage>().color = normalColor;
             }
         }
@@ -192,9 +159,5 @@ public class GameGrid : MonoBehaviour {
         r.gameObject.SetActive(false);
     }
 
-    enum State {
-        looking,
-        selecting
-    }
     #endregion
 }
