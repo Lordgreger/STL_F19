@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.UI;
 
 public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
     public int value;
@@ -13,16 +14,19 @@ public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public UnityEvent<GameElement> mouseExit = new ElementEvent();
     public TextMeshProUGUI text;
 
+    [HideInInspector]
+    public RawImage image;
+
     [System.Serializable]
     public class ElementEvent : UnityEvent<GameElement> {
 
     }
 
 
-    //private void Start()
-    //{
-    //    text = GetComponentInChildren<TextMeshProUGUI>();
-    //}
+    private void Start()
+    {
+        image = GetComponent<RawImage>();
+    }
 
     public GameElement() {
         

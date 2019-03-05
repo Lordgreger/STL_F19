@@ -35,7 +35,16 @@ public class GameGrid : MonoBehaviour {
         handleInput();
     }
 
-    private void handleInput() {  
+    private void handleInput() {
+
+        if (Input.GetKeyUp(KeyCode.A)) {
+            selectionEvent.Invoke(currentSelection);
+        }
+
+        if (Input.GetKeyDown(KeyCode.A)) {
+            addToSelected(selectorPos);
+        }
+
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
             moveSelector(new int[] {-1, 0});
         }
@@ -49,8 +58,11 @@ public class GameGrid : MonoBehaviour {
             moveSelector(new int[] {0, -1});
         }
 
-        if(Input.GetKey(KeyCode.A)) {
-            
+        if (Input.GetKey(KeyCode.A)) {
+            addToSelected(selectorPos);
+        }
+        else {
+            setSelected(selectorPos);
         }
     }
 
@@ -77,10 +89,6 @@ public class GameGrid : MonoBehaviour {
             selectorPos[1] = 0;
         }
 
-        //if (!(selectorPos[0] == selectorPrevPos[0] && selectorPos[1] == selectorPrevPos[1])) {
-        //grid[selectorPos[0], selectorPos[1]].GetComponent<RawImage>().color = mouseOverColor;
-        //grid[selectorPrevPos[0], selectorPrevPos[1]].GetComponent<RawImage>().color = normalColor;
-        //}
         setSelectorPos(selectorPos);
     }
 
@@ -89,12 +97,34 @@ public class GameGrid : MonoBehaviour {
     }
 
     private void addToSelected(int[] pos) {
-        currentSelection.Add(grid[selectorPos[0], selectorPos[1]]);
+
+        GameElement ge = grid[selectorPos[0], selectorPos[1]];
+
+        if (ge == null) {
+            return;
+        }
+
+        if (!currentSelection.Contains(ge)) {
+            currentSelection.Add(ge);
+
+            if (ge.image == null) {
+                return;
+            }
+
+            ge.image.color = selectedColor;
+        }
     }
 
     private void setSelected(int[] pos) {
-        currentSelection.Clear();
+        clearSelected();
         addToSelected(pos);
+    }
+
+    private void clearSelected() {
+        foreach (var ge in currentSelection) {
+            ge.image.color = normalColor;
+        }
+        currentSelection.Clear();
     }
 
     #region Init

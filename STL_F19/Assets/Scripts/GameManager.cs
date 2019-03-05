@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
-    const float delayAddRandom = 1;
+    const float delayAddRandom = 4f;
 
     public Target target;
     public GameGrid gg;
@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour {
     public void onSelection(List<GameElement> elements) {
         //print("Got selections");
         if (checkSolution(elements)) {
-            print("HEJ PETER!");
             target.setNewTarget();
             gg.removeElements(elements);
         }
