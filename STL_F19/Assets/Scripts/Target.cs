@@ -14,8 +14,12 @@ public class Target : MonoBehaviour {
     }
 
     public void setNewTarget() {
-        targetValue = Random.Range(2, 11);
+        targetValue = Random.Range(11, 30);
         text.text = targetValue.ToString();
+    }
+
+    public void clearTarget() {
+        text.text = "";
     }
 
 }

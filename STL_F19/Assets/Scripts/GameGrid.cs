@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class GameGrid : MonoBehaviour {
     const float gridDistance = 50.0f;
 
-    GameElement[,] grid = new GameElement[6,8];
+    GameElement[,] grid = new GameElement[5,10];
 
     [HideInInspector]
     public UnityEvent loseEvent = new UnityEvent();
@@ -17,6 +17,12 @@ public class GameGrid : MonoBehaviour {
     public Color normalColor;
     public Color selectedColor;
     public int[] selectorPos = new int[2] { 0, 0 };
+
+    public KeyCode upKey;
+    public KeyCode downKey;
+    public KeyCode leftKey;
+    public KeyCode rightKey;
+    public KeyCode selectKey;
 
     [System.Serializable]
     public class SelectedEvent : UnityEvent<List<GameElement>> {
@@ -35,31 +41,50 @@ public class GameGrid : MonoBehaviour {
         handleInput();
     }
 
+    #region Selector
     private void handleInput() {
 
-        if (Input.GetKeyUp(KeyCode.A)) {
-            selectionEvent.Invoke(currentSelection);
+        // Catch for ending selection
+        if (Input.GetKeyUp(selectKey)) {
+            if (currentSelection.Count != 0) {
+                selectionEvent.Invoke(currentSelection);
+                clearSelected();
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.A)) {
-            addToSelected(selectorPos);
+        // Catch for starting selection
+        if (Input.GetKeyDown(selectKey)) {
+            print(atSelector().gameObject.activeSelf);
+            if (atSelector().gameObject.activeSelf) {
+                addToSelected(selectorPos);
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+        // Handle movement
+        if (Input.GetKeyDown(leftKey)) {
             moveSelector(new int[] {-1, 0});
+            doSelectionInput();
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow)) {
+        else if (Input.GetKeyDown(rightKey)) {
             moveSelector(new int[] {1, 0});
+            doSelectionInput();
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow)) {
+        else if (Input.GetKeyDown(upKey)) {
             moveSelector(new int[] {0, 1});
+            doSelectionInput();
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow)) {
+        else if (Input.GetKeyDown(downKey)) {
             moveSelector(new int[] {0, -1});
+            doSelectionInput();
         }
+        
+    }
 
-        if (Input.GetKey(KeyCode.A)) {
-            addToSelected(selectorPos);
+    private void doSelectionInput() {
+        if (Input.GetKey(selectKey)) {
+            if (atSelector().gameObject.activeSelf) {
+                addToSelected(selectorPos);
+            }
         }
         else {
             setSelected(selectorPos);
@@ -87,6 +112,11 @@ public class GameGrid : MonoBehaviour {
 
         if (selectorPos[1] < 0) {
             selectorPos[1] = 0;
+        }
+
+        if (!grid[selectorPos[0], selectorPos[1]].gameObject.activeSelf && Input.GetKey(selectKey)) {
+            selectorPos = selectorPrevPos;
+            return;
         }
 
         setSelectorPos(selectorPos);
@@ -117,15 +147,21 @@ public class GameGrid : MonoBehaviour {
 
     private void setSelected(int[] pos) {
         clearSelected();
-        addToSelected(pos);
+        //addToSelected(pos);
     }
 
     private void clearSelected() {
+        print(currentSelection.Count);
         foreach (var ge in currentSelection) {
             ge.image.color = normalColor;
         }
         currentSelection.Clear();
     }
+
+    private GameElement atSelector() {
+        return grid[selectorPos[0], selectorPos[1]];
+    }
+    #endregion
 
     #region Init
     void InitGrid() {
@@ -187,6 +223,14 @@ public class GameGrid : MonoBehaviour {
         l.gameObject.SetActive(true);
         l.SetElement(r.value);
         r.gameObject.SetActive(false);
+    }
+
+    public void clearGrid() {
+        foreach (var ge in grid) {
+            ge.gameObject.SetActive(false);
+        }
+        selectorPos = new int[] { 0, 0 };
+        setSelectorPos(selectorPos);
     }
 
     #endregion

@@ -1,112 +1,65 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour {
 
-    const float delayAddRandom = 4f;
+    public PlayerManager p1;
+    public PlayerManager p2;
+    public GameObject newGameButton;
 
-    public Target target;
-    public GameGrid gg;
+    public TextMeshProUGUI countdownText;
+    public GameObject countdown;
 
-    State state;
-    int currentTarget;
+    public TextMeshProUGUI resultText;
+    public GameObject result;
 
-    float timerAddRandom;
-    bool runTimerAddRandom;
+    public float gameTime;
+
+    float timeLeft;
 
     private void Start() {
-        state = State.notPlaying;
-        gg.selectionEvent.AddListener(onSelection);
-        //startNewGame();
-    }
-
-    private void Update() {
-        startNewGame();
-        runState();
-
-    }
-
-    public void onSelection(List<GameElement> elements) {
-        //print("Got selections");
-        if (checkSolution(elements)) {
-            target.setNewTarget();
-            gg.removeElements(elements);
-        }
-    }
-
-    bool checkSolution(List<GameElement> elements) {
-        int sum = 0;
-        foreach (var e in elements) {
-            sum += e.value;
-        }
-
-        if (sum == target.targetValue) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        countdown.SetActive(false);
+        result.SetActive(false);
     }
 
     public void startNewGame() {
-        if (state == State.playing)
-            return;
-
-        //gg.enableSelection = true;
-
-        setupGame();
-        target.setNewTarget();
-        state = State.playing;
+        p1.startNewGame();
+        p2.startNewGame();
+        newGameButton.SetActive(false);
+        result.SetActive(false);
+        timeLeft = gameTime;
+        countdown.SetActive(true);
+        countdownText.text = timeLeft.ToString();
+        StartCoroutine(gameCountdown());
     }
 
-    public void exitGame() {
-        Application.Quit();
-    }
-
-    #region States
-    void runState() {
-        if (state == State.notPlaying) {
-
+    IEnumerator gameCountdown() {
+        while (timeLeft > 0f) {
+            yield return new WaitForSeconds(0.1f);
+            timeLeft -= 0.1f;
+            countdownText.text = ((int)timeLeft).ToString();
         }
-        else if (state == State.playing) {
-            addNewRandomRoutine();
+        endGame();
+    }
+
+    void endGame() {
+        p1.endGame();
+        p2.endGame();
+        newGameButton.SetActive(true);
+        countdown.gameObject.SetActive(false);
+        result.SetActive(true);
+
+        if (p1.score.getScore() == p2.score.getScore()) {
+            resultText.text = "It is a tie!";
+        }
+        else if (p1.score.getScore() > p2.score.getScore()) {
+            resultText.text = "<-- Left win!";
+        }
+        else {
+            resultText.text = "Right win! -->";
         }
     }
-    #endregion
 
-    #region Misc
-    void addNewRandomRoutine() {
-        if (runTimerAddRandom) {
-            if (timerAddRandom <= 0f) {
-                addRandomToRandomColumn();
-                timerAddRandom = delayAddRandom;
-            }
-            else {
-                timerAddRandom -= Time.deltaTime;
-            }
-        }
-    }
-
-    void setupGame() {
-        for (int i = 0; i < gg.GetColumnCount(); i++) {
-            for (int j = 0; j < 2; j++) { 
-                int randomValue = Random.Range(1, 9); 
-                gg.AddToColumn(randomValue, i);
-            }    
-        }
-
-        timerAddRandom = delayAddRandom;
-        runTimerAddRandom = true;
-    }
-
-    void addRandomToRandomColumn() {
-        gg.AddToColumn(Random.Range(1, 10), Random.Range(0, gg.GetColumnCount()));
-    }
-
-    enum State {
-        notPlaying,
-        playing
-    }
-    #endregion
 }
