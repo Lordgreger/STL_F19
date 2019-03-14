@@ -264,5 +264,33 @@ public class GameGrid : MonoBehaviour {
         fillColumn(c);
     }
 
+    public void disableNumbers(float time)
+    {
+        int randomNumber = Random.Range(1, 9);
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            for (int j = 0; j < grid.GetLength(1); j++)
+            {
+                if (grid[i,j].value == randomNumber)
+                {
+                    Debug.Log("The remove number: " + randomNumber);
+                    grid[i, j].gameObject.SetActive(false);
+                }
+            }
+            fixColumn(i);
+            StartCoroutine(reenableNumbers(time));
+        }
+    }
+
+    IEnumerator reenableNumbers(float time)
+    {
+        yield return new WaitForSeconds(time);
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            fillColumn(i);
+        }
+        
+    }
+
     #endregion
 }

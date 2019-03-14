@@ -14,7 +14,8 @@ public class PlayerManager : MonoBehaviour
 
     public enum ComboType {
         None,
-        Four
+        Four,
+        Numbers
     }
 
     [System.Serializable]
@@ -40,12 +41,15 @@ public class PlayerManager : MonoBehaviour
     public void onSelection(List<GameElement> elements) {
         if (checkSolution(elements)) {
             score.addScore(elements.Count);
-            target.setNewTarget();
-            gg.removeElements(elements);
             ComboType combo = checkCombo(elements);
-            if (combo != ComboType.None) {
+            if (combo != ComboType.None)
+            {
                 sendCombo.Invoke(combo);
             }
+
+            target.setNewTarget();
+            gg.removeElements(elements);
+            
         }
     }
 
@@ -57,6 +61,10 @@ public class PlayerManager : MonoBehaviour
 
             case ComboType.Four:
                 gg.disableColumn(Random.Range(0, gg.GetColumnCount()), 10);
+                break;
+
+            case ComboType.Numbers:
+                gg.disableNumbers(10);
                 break;
 
             default:
@@ -79,7 +87,24 @@ public class PlayerManager : MonoBehaviour
     }
 
     ComboType checkCombo(List<GameElement> elements) {
-        if (elements.Count > 3) {
+        if (elements.Count > 2)
+        {
+            int sameNumber = 0;
+            for (int i = 0; i < elements.Count; i++)
+            {  
+                if (elements[i].value == 3)
+                {
+                    sameNumber += 1;
+                    if (sameNumber > 1)
+                        {
+                            return ComboType.Numbers;
+                        }
+                }
+            }
+            
+        }
+        else if (elements.Count > 3)
+        {
             return ComboType.Four;
         }
         return ComboType.None;
