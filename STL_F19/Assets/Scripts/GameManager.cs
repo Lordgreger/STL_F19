@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour {
     private void Start() {
         countdown.SetActive(false);
         result.SetActive(false);
+        p1.sendCombo.AddListener(p2.applyCombo);
+        p2.sendCombo.AddListener(p1.applyCombo);
     }
 
     public void startNewGame() {
@@ -62,8 +64,8 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void ExitGame()
-    {
+    public void ExitGame() {
         Application.Quit();
     }
+
 }

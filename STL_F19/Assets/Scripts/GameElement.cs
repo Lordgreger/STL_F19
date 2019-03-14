@@ -48,6 +48,12 @@ public class GameElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         this.value = value;
     }
 
+    public void SetElement() {
+        int value = Random.Range(Constants.elementValueMin, Constants.elementValueMax + 1);
+        text.text = value.ToString();
+        this.value = value;
+    }
+
     public void OnPointerDown(PointerEventData eventData) {
         mouseEnter.Invoke(this);
         //print("Adding first!");

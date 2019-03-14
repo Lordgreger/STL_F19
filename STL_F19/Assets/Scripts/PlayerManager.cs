@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -9,6 +10,17 @@ public class PlayerManager : MonoBehaviour
     public Target target;
     public Score score;
     public GameGrid gg;
+    public UnityEvent<ComboType> sendCombo = new ComboEvent();
+
+    public enum ComboType {
+        None,
+        Four
+    }
+
+    [System.Serializable]
+    public class ComboEvent : UnityEvent<ComboType> {
+
+    }
 
     State state;
     int currentTarget;
@@ -30,6 +42,25 @@ public class PlayerManager : MonoBehaviour
             score.addScore(elements.Count);
             target.setNewTarget();
             gg.removeElements(elements);
+            ComboType combo = checkCombo(elements);
+            if (combo != ComboType.None) {
+                sendCombo.Invoke(combo);
+            }
+        }
+    }
+
+    public void applyCombo(ComboType type) {
+        switch (type) {
+
+            case ComboType.None:
+                break;
+
+            case ComboType.Four:
+                gg.disableColumn(Random.Range(0, gg.GetColumnCount()), 10);
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -45,6 +76,13 @@ public class PlayerManager : MonoBehaviour
         else {
             return false;
         }
+    }
+
+    ComboType checkCombo(List<GameElement> elements) {
+        if (elements.Count > 3) {
+            return ComboType.Four;
+        }
+        return ComboType.None;
     }
 
     public void startNewGame() {
@@ -92,16 +130,19 @@ public class PlayerManager : MonoBehaviour
     }
 
     void setupGame() {
+        /*
         for (int i = 0; i < gg.GetColumnCount(); i++) {
             for (int j = 0; j < 2; j++) {
                 int randomValue = Random.Range(1, 9);
                 gg.AddToColumn(randomValue, i);
             }
         }
+        */
+        gg.fillGrid();
 
         gg.selector.SetActive(true);
-        timerAddRandom = delayAddRandom;
-        runTimerAddRandom = true;
+        //timerAddRandom = delayAddRandom;
+        //runTimerAddRandom = true;
         score.setScore(0);
     }
 

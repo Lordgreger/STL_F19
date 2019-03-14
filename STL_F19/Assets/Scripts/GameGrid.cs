@@ -54,7 +54,7 @@ public class GameGrid : MonoBehaviour {
 
         // Catch for starting selection
         if (Input.GetKeyDown(selectKey)) {
-            print(atSelector().gameObject.activeSelf);
+            //print(atSelector().gameObject.activeSelf);
             if (atSelector().gameObject.activeSelf) {
                 addToSelected(selectorPos);
             }
@@ -151,7 +151,7 @@ public class GameGrid : MonoBehaviour {
     }
 
     private void clearSelected() {
-        print(currentSelection.Count);
+        //print(currentSelection.Count);
         foreach (var ge in currentSelection) {
             ge.image.color = normalColor;
         }
@@ -196,6 +196,15 @@ public class GameGrid : MonoBehaviour {
         loseEvent.Invoke();
     }
 
+    public void fillGrid() {
+        for (int i = 0; i < grid.GetLength(0); i++) {
+            for (int j = 0; j < grid.GetLength(1); j++) {
+                grid[i, j].gameObject.SetActive(true);
+                grid[i, j].SetElement();
+            }
+        }
+    }
+
     public void removeElements(List<GameElement> elements) {
         List<int> columnsToFix = new List<int>();
 
@@ -206,6 +215,7 @@ public class GameGrid : MonoBehaviour {
 
         foreach (var c in columnsToFix) {
             fixColumn(c);
+            fillColumn(c);
         }
     }
 
@@ -215,6 +225,15 @@ public class GameGrid : MonoBehaviour {
                 moveElement(grid[column, i - 1], grid[column, i]);
                 fixColumn(column);
                 return;
+            }
+        } 
+    }
+
+    void fillColumn(int column) {
+        for (int i = 0; i < grid.GetLength(1); i++) {
+            if (!grid[column, i].gameObject.activeSelf) {
+                grid[column, i].gameObject.SetActive(true);
+                grid[column, i].SetElement();
             }
         }
     }
@@ -231,6 +250,18 @@ public class GameGrid : MonoBehaviour {
         }
         selectorPos = new int[] { 0, 0 };
         setSelectorPos(selectorPos);
+    }
+
+    public void disableColumn(int c, float time) {
+        for (int i = 0; i < grid.GetLength(1); i++) {
+            grid[c, i].gameObject.SetActive(false);
+        }
+        StartCoroutine(reenableColumn(c, time));
+    }
+
+    IEnumerator reenableColumn(int c, float time) {
+        yield return new WaitForSeconds(time);
+        fillColumn(c);
     }
 
     #endregion
