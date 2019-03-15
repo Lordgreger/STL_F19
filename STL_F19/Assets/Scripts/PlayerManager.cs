@@ -87,26 +87,23 @@ public class PlayerManager : MonoBehaviour
     }
 
     ComboType checkCombo(List<GameElement> elements) {
-        if (elements.Count > 2)
-        {
+        if (elements.Count > 2) {
             int sameNumber = 0;
-            for (int i = 0; i < elements.Count; i++)
-            {  
-                if (elements[i].value == 3)
-                {
+            for (int i = 0; i < elements.Count; i++) {  
+                if (elements[i].value == 3) {
                     sameNumber += 1;
-                    if (sameNumber > 1)
-                        {
-                            return ComboType.Numbers;
-                        }
+                    if (sameNumber > 1) {
+                        return ComboType.Numbers;
+                    }
                 }
-            }
-            
+            }    
         }
-        else if (elements.Count > 3)
-        {
+
+
+        if (elements.Count > 3) {
             return ComboType.Four;
         }
+
         return ComboType.None;
     }
 
