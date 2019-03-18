@@ -255,7 +255,9 @@ public class GameGrid : MonoBehaviour {
         selectorPos = new int[] { 0, 0 };
         setSelectorPos(selectorPos);
     }
+    #endregion
 
+    #region Combos
     public void disableColumn(int c, float time) {
         for (int i = 0; i < grid.GetLength(1); i++) {
             grid[c, i].gameObject.SetActive(false);
@@ -294,6 +296,76 @@ public class GameGrid : MonoBehaviour {
             fillColumn(i);
         }
         
+    }
+
+    public void disableRLBlocks(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 2);
+        int startBlockRow = Random.Range(2, grid.GetLength(1) - 1);
+        grid[startBlockColoum, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum, startBlockRow - 1].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow - 1].gameObject.SetActive(false);
+        grid[startBlockColoum + 2, startBlockRow - 1].gameObject.SetActive(false);
+        StartCoroutine(reenableNumbers(time));
+    }
+
+    public void disableLBlocks(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 1);
+        int startBlockRow = Random.Range(3, grid.GetLength(1) - 1);
+        grid[startBlockColoum, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum, startBlockRow - 1].gameObject.SetActive(false);
+        grid[startBlockColoum, startBlockRow - 2].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow - 2].gameObject.SetActive(false);
+        StartCoroutine(reenableNumbers(time));
+    }
+
+    public void disableTBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 2);
+        int startBlockRow = Random.Range(3, grid.GetLength(1) - 1);
+        grid[startBlockColoum, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum + 2, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow +1].gameObject.SetActive(false);
+        StartCoroutine(reenableNumbers(time));
+    }
+
+    public void disableSBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 2);
+        int startBlockRow = Random.Range(3, grid.GetLength(1) - 1);
+        grid[startBlockColoum, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow + 1].gameObject.SetActive(false);
+        grid[startBlockColoum + 2, startBlockRow + 1].gameObject.SetActive(false);
+        StartCoroutine(reenableNumbers(time));
+    }
+
+    public void disableZBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 2);
+        int startBlockRow = Random.Range(3, grid.GetLength(1) - 1);
+        grid[startBlockColoum, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow - 1].gameObject.SetActive(false);
+        grid[startBlockColoum + 2, startBlockRow - 1].gameObject.SetActive(false);
+        StartCoroutine(reenableNumbers(time));
+    }
+
+    public void disableIBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0));
+        int startBlockRow = Random.Range(0, grid.GetLength(1) - 3);
+        grid[startBlockColoum, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum, startBlockRow + 1].gameObject.SetActive(false);
+        grid[startBlockColoum, startBlockRow + 2].gameObject.SetActive(false);
+        grid[startBlockColoum, startBlockRow + 3].gameObject.SetActive(false);
+        StartCoroutine(reenableNumbers(time));
+    }
+
+    public void disableOBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 1);
+        int startBlockRow = Random.Range(0, grid.GetLength(1) - 1);
+        grid[startBlockColoum, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum , startBlockRow + 1].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow].gameObject.SetActive(false);
+        grid[startBlockColoum + 1, startBlockRow + 1].gameObject.SetActive(false);
+        StartCoroutine(reenableNumbers(time));
     }
 
     #endregion

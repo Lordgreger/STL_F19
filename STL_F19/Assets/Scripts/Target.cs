@@ -14,7 +14,7 @@ public class Target : MonoBehaviour {
     }
 
     public void setNewTarget() {
-        targetValue = Random.Range(9, 20);
+        targetValue = Random.Range(Constants.targetValueMin, Constants.targetValueMax + 1);
         text.text = targetValue.ToString();
     }
 

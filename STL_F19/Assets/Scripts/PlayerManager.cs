@@ -16,7 +16,13 @@ public class PlayerManager : MonoBehaviour
         None,
         Four,
         Numbers,
-        Corner
+        ReverseLBlock,
+        LBlock,
+        TBlock, 
+        SBlock,
+        ZBlock,
+        IBlock, 
+        OBlock
     }
 
     [System.Serializable]
@@ -68,14 +74,39 @@ public class PlayerManager : MonoBehaviour
                 gg.disableNumbers(10);
                 break;
 
-            case ComboType.Corner:
-                gg.disableColumn(Random.Range(0, gg.GetColumnCount()), 10);
+            case ComboType.LBlock:
+                gg.disableLBlocks(10);
+                break;
+
+            case ComboType.ReverseLBlock:
+                gg.disableRLBlocks(10);
+                break;
+
+            case ComboType.TBlock:
+                gg.disableTBlock(10);
+                break;
+
+            case ComboType.SBlock:
+                gg.disableSBlock(10);
+                break;
+
+            case ComboType.ZBlock:
+                gg.disableZBlock(10);
+                break;
+
+            case ComboType.IBlock:
+                gg.disableIBlock(10);
+                break;
+
+            case ComboType.OBlock:
+                gg.disableOBlock(10);
                 break;
 
             default:
                 break;
         }
     }
+    
 
     bool checkSolution(List<GameElement> elements) {
         int sum = 0;
@@ -96,20 +127,74 @@ public class PlayerManager : MonoBehaviour
         // Create position array from elements
         bool[,] arr = elementsToPositionArray(elements);
 
-        // Check for corner
-        bool[,] c1Mask = new bool[,] { {false, true }, {true, true } };
-        bool[,] c2Mask = new bool[,] { {true, false }, {true, true } };
-        bool[,] c3Mask = new bool[,] { {true, true }, {false, true } };
-        bool[,] c4Mask = new bool[,] { {true, true }, {true, false } };
-        if (checkArrayForMask(arr, c1Mask) ||
-            checkArrayForMask(arr, c2Mask) ||
-            checkArrayForMask(arr, c3Mask) ||
-            checkArrayForMask(arr, c4Mask)) {
-            return ComboType.Corner;
+        // Check for revese L combos
+        bool[,] rL1Mask = new bool[,] { {false, true }, {false, true }, { true, true } };
+        bool[,] rL2Mask = new bool[,] { {true, true }, {true, false }, {true, false } };
+        bool[,] rL3Mask = new bool[,] { {true, false, false }, {true, true, true } };
+        bool[,] rL4Mask = new bool[,] { {true, true, true }, {false, false, true } };
+        if (checkArrayForMask(arr, rL1Mask) ||
+            checkArrayForMask(arr, rL2Mask) ||
+            checkArrayForMask(arr, rL3Mask) ||
+            checkArrayForMask(arr, rL4Mask)) {
+            return ComboType.ReverseLBlock;
         }
 
+        // Check for L combo
+        bool[,] l1Mask = new bool[,] { { true, false }, { true, false }, { true, true } };
+        bool[,] l2Mask = new bool[,] { { true, true }, { false, true }, { false, true } };
+        bool[,] l3Mask = new bool[,] { { false, false, true }, { true, true, true } };
+        bool[,] l4Mask = new bool[,] { { true, true, true }, { true, false, false } };
+        if (checkArrayForMask(arr, l1Mask) ||
+            checkArrayForMask(arr, l2Mask) ||
+            checkArrayForMask(arr, l3Mask) ||
+            checkArrayForMask(arr, l4Mask)) {
+            return ComboType.LBlock;
+        }
 
-        if (elements.Count > 2) {
+        // Check for T block
+        bool[,] t1Mask = new bool[,] { { false, true, false }, { true, true, true } };
+        bool[,] t2Mask = new bool[,] { { true, true, true }, { false, true, false } };
+        bool[,] t3Mask = new bool[,] { { true, false }, { true, true }, {true, false } };
+        bool[,] t4Mask = new bool[,] { { false, true}, { true, true }, { false, true } };
+        if (checkArrayForMask(arr, t1Mask) ||
+            checkArrayForMask(arr, t2Mask) ||
+            checkArrayForMask(arr, t3Mask) ||
+            checkArrayForMask(arr, t4Mask)) {
+            return ComboType.TBlock;
+        }
+
+        // Check for S block
+        bool[,] s1Mask = new bool[,] { { false, true, true }, { true, true, false } };
+        bool[,] s2Mask = new bool[,] { { true, false }, { true, true }, { false, true } };
+        if (checkArrayForMask(arr, s1Mask) ||
+            checkArrayForMask(arr, s2Mask)) {
+            return ComboType.SBlock;
+        }
+
+        // Check for Z block
+        bool[,] z1Mask = new bool[,] { { true, true, false }, { false, true, true } };
+        bool[,] z2Mask = new bool[,] { { false, true }, { true, true }, { true, false } };
+        if (checkArrayForMask(arr, z1Mask) ||
+            checkArrayForMask(arr, z2Mask)) {
+            return ComboType.ZBlock;
+        }
+
+        // Check for I block
+        bool[,] i1Mask = new bool[,] { { true, true, true, true }};
+        bool[,] i2Mask = new bool[,] { { true }, { true }, { true } , { true } };
+        if (checkArrayForMask(arr, i1Mask) ||
+            checkArrayForMask(arr, i2Mask)) {
+            return ComboType.IBlock;
+        }
+
+        // Check for O block
+        bool[,] o1Mask = new bool[,] { { true, true }, { true, true } };
+        if (checkArrayForMask(arr, o1Mask)) {
+            return ComboType.OBlock;
+        }
+
+        // Same Number combo
+        if (elements.Count > 3) {
             int sameNumber = 0;
             for (int i = 0; i < elements.Count; i++) {  
                 if (elements[i].value == 3) {
@@ -119,11 +204,6 @@ public class PlayerManager : MonoBehaviour
                     }
                 }
             }    
-        }
-
-
-        if (elements.Count > 3) {
-            return ComboType.Four;
         }
 
         return ComboType.None;
