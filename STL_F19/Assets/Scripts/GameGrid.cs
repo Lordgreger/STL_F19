@@ -185,6 +185,10 @@ public class GameGrid : MonoBehaviour {
         return grid.GetLength(0);
     }
 
+    public int GetRowCount() {
+        return grid.GetLength(1);
+    }
+
     public void AddToColumn(int value, int column) {
         for (int i = 0; i < grid.GetLength(1); i++) {
             if (!grid[column, i].gameObject.activeSelf) {

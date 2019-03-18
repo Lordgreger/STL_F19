@@ -15,7 +15,8 @@ public class PlayerManager : MonoBehaviour
     public enum ComboType {
         None,
         Four,
-        Numbers
+        Numbers,
+        Corner
     }
 
     [System.Serializable]
@@ -67,6 +68,10 @@ public class PlayerManager : MonoBehaviour
                 gg.disableNumbers(10);
                 break;
 
+            case ComboType.Corner:
+                gg.disableColumn(Random.Range(0, gg.GetColumnCount()), 10);
+                break;
+
             default:
                 break;
         }
@@ -87,6 +92,23 @@ public class PlayerManager : MonoBehaviour
     }
 
     ComboType checkCombo(List<GameElement> elements) {
+
+        // Create position array from elements
+        bool[,] arr = elementsToPositionArray(elements);
+
+        // Check for corner
+        bool[,] c1Mask = new bool[,] { {false, true }, {true, true } };
+        bool[,] c2Mask = new bool[,] { {true, false }, {true, true } };
+        bool[,] c3Mask = new bool[,] { {true, true }, {false, true } };
+        bool[,] c4Mask = new bool[,] { {true, true }, {true, false } };
+        if (checkArrayForMask(arr, c1Mask) ||
+            checkArrayForMask(arr, c2Mask) ||
+            checkArrayForMask(arr, c3Mask) ||
+            checkArrayForMask(arr, c4Mask)) {
+            return ComboType.Corner;
+        }
+
+
         if (elements.Count > 2) {
             int sameNumber = 0;
             for (int i = 0; i < elements.Count; i++) {  
@@ -177,4 +199,43 @@ public class PlayerManager : MonoBehaviour
         playing
     }
     #endregion
+
+    bool[,] elementsToPositionArray(List<GameElement> elements) {
+        bool[,] output = new bool[gg.GetColumnCount(), gg.GetRowCount()];
+
+        for (int i = 0; i < output.GetLength(0); i++) {
+            for (int j = 0; j < output.GetLength(1); j++) {
+                output[i, j] = false;
+            }
+        }
+
+
+        foreach (var e in elements) {
+            output[e.column, e.row] = true;
+        }
+
+        return output;
+    }
+
+    bool checkArrayForMask(bool[,] arr, bool[,] mask) {
+        for (int i = 0; i < arr.GetLength(0) - mask.GetLength(0); i++) {
+            for (int j = 0; j < arr.GetLength(1) - mask.GetLength(1); j++) {
+                if (checkMaskInternal(arr, mask, i, j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool checkMaskInternal(bool[,] arr, bool[,] mask, int i, int j) {
+        for (int im = 0; im < mask.GetLength(0); im++) {
+            for (int jm = 0; jm < mask.GetLength(1); jm++) {
+                if (arr[i + im, j + jm] != mask[im, jm]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
