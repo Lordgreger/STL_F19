@@ -5,17 +5,19 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class GameGrid : MonoBehaviour {
-    const float gridDistance = 50.0f;
+    const float gridDistance = 55.0f;
 
-    GameElement[,] grid = new GameElement[5,10];
+    GameElement[,] grid = new GameElement[5,8];
 
     [HideInInspector]
     public UnityEvent loseEvent = new UnityEvent();
     public UnityEvent<List<GameElement>> selectionEvent = new SelectedEvent();
     public GameObject elementPrefab;
     public GameObject selector;
-    public Color normalColor;
-    public Color selectedColor;
+
+    public Texture unSelected;
+    public Texture selected;
+
     public int[] selectorPos = new int[2] { 0, 0 };
 
     public KeyCode upKey;
@@ -91,6 +93,24 @@ public class GameGrid : MonoBehaviour {
         }
     }
 
+    private void SetPosColor(bool isSelected, int x, int y) {
+        if (isSelected) {
+            grid[x, y].GetComponent<RawImage>().texture = selected;
+        } 
+        else {
+            grid[x, y].GetComponent<RawImage>().texture = unSelected;
+        }
+        
+    }
+
+    private void SetGEColor(bool isSelected, GameElement ge) {
+        if (isSelected) {
+            ge.GetComponent<RawImage>().texture = selected;
+        } else {
+            ge.GetComponent<RawImage>().texture = unSelected;
+        }
+    }
+
     private void moveSelector(int[] dir) {
         int[] selectorPrevPos = new int[2];
         selectorPos.CopyTo(selectorPrevPos, 0);
@@ -114,12 +134,20 @@ public class GameGrid : MonoBehaviour {
             selectorPos[1] = 0;
         }
 
+        SetPosColor(true, selectorPos[0], selectorPos[1]);
+
+        if (!Input.GetKey(selectKey)) {
+            SetPosColor(false, selectorPrevPos[0], selectorPrevPos[1]);
+        }
+
         if (!grid[selectorPos[0], selectorPos[1]].gameObject.activeSelf && Input.GetKey(selectKey)) {
             selectorPos = selectorPrevPos;
             return;
         }
 
+        
         setSelectorPos(selectorPos);
+        
     }
 
     private void setSelectorPos(int[] pos) {
@@ -141,7 +169,7 @@ public class GameGrid : MonoBehaviour {
                 return;
             }
 
-            ge.image.color = selectedColor;
+            SetGEColor(true, ge);
         }
     }
 
@@ -153,7 +181,7 @@ public class GameGrid : MonoBehaviour {
     private void clearSelected() {
         //print(currentSelection.Count);
         foreach (var ge in currentSelection) {
-            ge.image.color = normalColor;
+            SetGEColor(false, ge);
         }
         currentSelection.Clear();
     }
@@ -174,7 +202,6 @@ public class GameGrid : MonoBehaviour {
                 ge.gameObject.SetActive(false);
                 ge.column = i;
                 ge.row = j;
-                ge.GetComponent<RawImage>().color = normalColor;
             }
         }
     }

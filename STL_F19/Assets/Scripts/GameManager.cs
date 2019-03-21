@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour {
@@ -8,9 +9,10 @@ public class GameManager : MonoBehaviour {
     public PlayerManager p1;
     public PlayerManager p2;
     public GameObject newGameButton;
+    public GameObject buttonTutorial1;
+    public GameObject buttonTutorial2;
 
-    public TextMeshProUGUI countdownText;
-    public GameObject countdown;
+    public Image countDownBar;
 
     public TextMeshProUGUI resultText;
     public GameObject result;
@@ -20,20 +22,21 @@ public class GameManager : MonoBehaviour {
     float timeLeft;
 
     private void Start() {
-        countdown.SetActive(false);
         result.SetActive(false);
         p1.sendCombo.AddListener(p2.applyCombo);
         p2.sendCombo.AddListener(p1.applyCombo);
+        //countDownBar.GetComponent<Image>().enabled = false;
     }
 
     public void startNewGame() {
         p1.startNewGame();
         p2.startNewGame();
+        buttonTutorial1.SetActive(false);
+        buttonTutorial2.SetActive(false);
         newGameButton.SetActive(false);
         result.SetActive(false);
         timeLeft = gameTime;
-        countdown.SetActive(true);
-        countdownText.text = timeLeft.ToString();
+        
         StartCoroutine(gameCountdown());
     }
 
@@ -41,7 +44,8 @@ public class GameManager : MonoBehaviour {
         while (timeLeft > 0f) {
             yield return new WaitForSeconds(0.1f);
             timeLeft -= 0.1f;
-            countdownText.text = ((int)timeLeft).ToString();
+            countDownBar.fillAmount = timeLeft / gameTime;
+            countDownBar.GetComponent<Image>().enabled = true;
         }
         endGame();
     }
@@ -50,7 +54,6 @@ public class GameManager : MonoBehaviour {
         p1.endGame();
         p2.endGame();
         newGameButton.SetActive(true);
-        countdown.gameObject.SetActive(false);
         result.SetActive(true);
 
         if (p1.score.getScore() == p2.score.getScore()) {
