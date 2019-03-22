@@ -9,4 +9,6 @@ public static class Constants {
     public const int targetValueMin = 10;
     public const int targetValueMax = 20;
 
+    public const int gridElementsX = 5;
+    public const int gridElementsY = 6;
 }
