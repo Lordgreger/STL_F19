@@ -5,6 +5,303 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class GameGrid : MonoBehaviour {
+
+    // Public vars
+    [System.Serializable] public class SelectedEvent : UnityEvent<List<Element>> { }
+    public UnityEvent<List<Element>> selectionEvent = new SelectedEvent();
+    int[] selectorPos = new int[2] { 0, 0 };
+
+    public string upKey;
+    public string downKey;
+    public string leftKey;
+    public string rightKey;
+    public string selectKey;
+
+    public GridController gc;
+
+    // Private vars
+    Element[,] grid = new Element[Constants.gridElementsX, Constants.gridElementsY];
+    List<Element> currentSelection = new List<Element>();
+    bool handleInputEnabled = false;
+
+    // Get functions
+    public int GetColumnCount() { return grid.GetLength(0); }
+    public int GetRowCount() { return grid.GetLength(1); }
+
+    public class Element {
+        public int x, y, value;
+        public bool isLocked;
+
+        public Element(int x, int y, int value) {
+            this.x = x;
+            this.y = y;
+            this.value = value;
+            isLocked = false;
+        }
+
+        public Element(int x, int y) {
+            this.x = x;
+            this.y = y;
+            value = 0;
+            newRandomNumber();
+            isLocked = false;
+        }
+
+        public void newRandomNumber() {
+            value = Random.Range(Constants.elementValueMin, Constants.elementValueMax + 1);
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+
+    }
+
+    private void Update() {
+        if (handleInputEnabled) {
+            handleInput();
+        }
+    }
+
+    public void initGrid() {
+        gc.setup();
+
+        List<int> vals = new List<int>();
+        for (int i = 0; i < grid.GetLength(0); i++) {
+            vals.Clear();
+            for (int j = 0; j < grid.GetLength(1); j++) {
+                grid[i, j] = new Element(i, j);
+                vals.Add(grid[i, j].value);
+            }
+            gc.spawnMulNewInCol(i, vals);
+        }
+        handleInputEnabled = true;
+        
+        gc.setFollowSelector(selectorPos);
+    }
+
+    public void clearGrid() {
+        handleInputEnabled = false;
+        gc.destroyAll();
+    }
+
+    private void handleInput() {
+
+        // Catch for ending selection
+        if (Input.GetKeyUp(selectKey)) {
+            if (currentSelection.Count != 0) {
+                selectionEvent.Invoke(currentSelection);
+                clearSelected();
+            }
+        }
+
+        // Catch for starting selection
+        if (Input.GetKeyDown(selectKey)) {
+            addToSelected(selectorPos);
+        }
+
+        // Handle movement
+        if (Input.GetKeyDown(leftKey)) {
+            moveSelector(new int[] { -1, 0 });
+            doSelectionInput();
+        }
+        else if (Input.GetKeyDown(rightKey)) {
+            moveSelector(new int[] { 1, 0 });
+            doSelectionInput();
+        }
+        else if (Input.GetKeyDown(upKey)) {
+            moveSelector(new int[] { 0, 1 });
+            doSelectionInput();
+        }
+        else if (Input.GetKeyDown(downKey)) {
+            moveSelector(new int[] { 0, -1 });
+            doSelectionInput();
+        }
+
+        gc.setFollowSelector(selectorPos);
+    }
+
+    private void addToSelected(int[] pos) {
+
+        Element e = atSelector();
+
+        if (!currentSelection.Contains(e)) {
+            currentSelection.Add(e);
+            gc.setSelected(e);
+        }
+    }
+
+    private void moveSelector(int[] dir) {
+        int[] selectorPrevPos = new int[2];
+        selectorPos.CopyTo(selectorPrevPos, 0);
+
+        selectorPos[0] += dir[0];
+        selectorPos[1] += dir[1];
+
+        if (selectorPos[0] >= grid.GetLength(0)) {
+            selectorPos[0] = grid.GetLength(0) - 1;
+        }
+
+        if (selectorPos[0] < 0) {
+            selectorPos[0] = 0;
+        }
+
+        if (selectorPos[1] >= grid.GetLength(1)) {
+            selectorPos[1] = grid.GetLength(1) - 1;
+        }
+
+        if (selectorPos[1] < 0) {
+            selectorPos[1] = 0;
+        }
+
+        if (atSelector().isLocked) {
+            selectorPos = selectorPrevPos;
+        }
+    }
+
+    private void doSelectionInput() {
+        if (Input.GetKey(selectKey)) {
+            addToSelected(selectorPos);
+        }
+        else {
+            //clearSelected();
+            //addToSelected(selectorPos);
+        }
+    }
+
+    private void clearSelected() {
+        foreach (var e in currentSelection) {
+            gc.clearSelected(e);
+        }
+        currentSelection.Clear();
+    }
+
+    private Element atSelector() {
+        return grid[selectorPos[0], selectorPos[1]];
+    }
+
+    public void removeElements(List<Element> elements) {
+        List<int> columnsToFix = new List<int>();
+
+        foreach (var e in elements) {
+            columnsToFix.Add(e.x);
+            e.setValue(0);
+            gc.destroyElement(e);
+        }
+
+        foreach (var c in columnsToFix) {
+            fixColumn(c);
+            fillColumn(c);
+        }
+    }
+
+    void fixColumn(int c) {
+        for (int i = 1; i < grid.GetLength(1); i++) {
+            if (grid[c, i].value != 0 && grid[c, i - 1].value == 0) {
+                grid[c, i - 1].value = grid[c, i].value;
+                grid[c, i].value = 0;
+                fixColumn(c);
+                return;
+            }
+        }
+    }
+
+    void fillColumn(int c) {
+        List<int> vals = new List<int>();
+        for (int i = 0; i < grid.GetLength(1); i++) {
+            if (grid[c, i].value == 0) {
+                grid[c, i].newRandomNumber();
+                vals.Add(grid[c, i].value);
+            }
+        }
+        gc.spawnMulNewInCol(c, vals);
+    }
+
+    void moveElement(Element l, Element r) {
+        l.value = r.value;
+    }
+
+    public void timedLock(float time, Element e) {
+        e.isLocked = true;
+        StartCoroutine(unlockTimedRoutine(time, e));
+        gc.setLocked(e);
+    }
+
+    IEnumerator unlockTimedRoutine(float time, Element e) {
+        yield return new WaitForSeconds(time);
+        e.isLocked = false;
+        gc.clearLocked(e);
+    }
+
+    #region Combos
+    public void disableRLBlocks(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 2);
+        int startBlockRow = Random.Range(2, grid.GetLength(1) - 1);
+        timedLock(5f, grid[startBlockColoum, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum, startBlockRow - 1]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow - 1]);
+        timedLock(5f, grid[startBlockColoum + 2, startBlockRow - 1]);
+    }
+
+    public void disableLBlocks(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 1);
+        int startBlockRow = Random.Range(3, grid.GetLength(1) - 1);
+
+        timedLock(5f, grid[startBlockColoum, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum, startBlockRow - 1]);
+        timedLock(5f, grid[startBlockColoum, startBlockRow - 2]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow - 2]);
+
+    }
+
+    public void disableTBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 2);
+        int startBlockRow = Random.Range(3, grid.GetLength(1) - 1);
+        timedLock(5f, grid[startBlockColoum, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum + 2, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow + 1]);
+    }
+
+    public void disableSBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 2);
+        int startBlockRow = Random.Range(3, grid.GetLength(1) - 1);
+        timedLock(5f, grid[startBlockColoum, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow + 1]);
+        timedLock(5f, grid[startBlockColoum + 2, startBlockRow + 1]);
+    }
+
+    public void disableZBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 2);
+        int startBlockRow = Random.Range(3, grid.GetLength(1) - 1);
+        timedLock(5f, grid[startBlockColoum, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow - 1]);
+        timedLock(5f, grid[startBlockColoum + 2, startBlockRow - 1]);
+    }
+
+    public void disableIBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0));
+        int startBlockRow = Random.Range(0, grid.GetLength(1) - 3);
+        timedLock(5f, grid[startBlockColoum, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum, startBlockRow + 1]);
+        timedLock(5f, grid[startBlockColoum, startBlockRow + 2]);
+        timedLock(5f, grid[startBlockColoum, startBlockRow + 3]);
+    }
+
+    public void disableOBlock(float time) {
+        int startBlockColoum = Random.Range(0, grid.GetLength(0) - 1);
+        int startBlockRow = Random.Range(0, grid.GetLength(1) - 1);
+        timedLock(5f, grid[startBlockColoum, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum, startBlockRow + 1]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow]);
+        timedLock(5f, grid[startBlockColoum + 1, startBlockRow + 1]);
+    }
+    #endregion
+
+    // OLD CODE
+    /* 
     const float gridDistance = 55.0f;
 
     GameElement[,] grid = new GameElement[5,8];
@@ -396,4 +693,5 @@ public class GameGrid : MonoBehaviour {
     }
 
     #endregion
+    */
 }

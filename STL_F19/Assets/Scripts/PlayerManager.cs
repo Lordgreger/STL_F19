@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerManager : MonoBehaviour
-{
-    const float delayAddRandom = 3f;
-
+public class PlayerManager : MonoBehaviour {
     public Target target;
     public Score score;
     public GameGrid gg;
@@ -14,8 +11,6 @@ public class PlayerManager : MonoBehaviour
 
     public enum ComboType {
         None,
-        Four,
-        Numbers,
         ReverseLBlock,
         LBlock,
         TBlock, 
@@ -25,32 +20,21 @@ public class PlayerManager : MonoBehaviour
         OBlock
     }
 
-    [System.Serializable]
-    public class ComboEvent : UnityEvent<ComboType> {
-
-    }
+    [System.Serializable] public class ComboEvent : UnityEvent<ComboType> {}
 
     State state;
     int currentTarget;
-
-    float timerAddRandom;
-    bool runTimerAddRandom;
 
     private void Start() {
         state = State.notPlaying;
         gg.selectionEvent.AddListener(onSelection);
     }
 
-    private void Update() {
-        runState();
-    }
-
-    public void onSelection(List<GameElement> elements) {
+    public void onSelection(List<GameGrid.Element> elements) {
         if (checkSolution(elements)) {
             score.addScore(elements.Count);
             ComboType combo = checkCombo(elements);
-            if (combo != ComboType.None)
-            {
+            if (combo != ComboType.None) {
                 sendCombo.Invoke(combo);
             }
 
@@ -64,14 +48,6 @@ public class PlayerManager : MonoBehaviour
         switch (type) {
 
             case ComboType.None:
-                break;
-
-            case ComboType.Four:
-                gg.disableColumn(Random.Range(0, gg.GetColumnCount()), 10);
-                break;
-
-            case ComboType.Numbers:
-                gg.disableNumbers(10);
                 break;
 
             case ComboType.LBlock:
@@ -106,9 +82,8 @@ public class PlayerManager : MonoBehaviour
                 break;
         }
     }
-    
 
-    bool checkSolution(List<GameElement> elements) {
+    bool checkSolution(List<GameGrid.Element> elements) {
         int sum = 0;
         foreach (var e in elements) {
             sum += e.value;
@@ -122,7 +97,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    ComboType checkCombo(List<GameElement> elements) {
+    ComboType checkCombo(List<GameGrid.Element> elements) {
 
         // Create position array from elements
         bool[,] arr = elementsToPositionArray(elements);
@@ -193,19 +168,6 @@ public class PlayerManager : MonoBehaviour
             return ComboType.OBlock;
         }
 
-        // Same Number combo
-        if (elements.Count > 3) {
-            int sameNumber = 0;
-            for (int i = 0; i < elements.Count; i++) {  
-                if (elements[i].value == 3) {
-                    sameNumber += 1;
-                    if (sameNumber > 1) {
-                        return ComboType.Numbers;
-                    }
-                }
-            }    
-        }
-
         return ComboType.None;
     }
 
@@ -220,59 +182,20 @@ public class PlayerManager : MonoBehaviour
 
     public void endGame() {
         state = State.notPlaying;
-        gg.clearGrid();
         target.clearTarget();
-        gg.selector.SetActive(false);
+        gg.clearGrid();
     }
 
     public void exitGame() {
         Application.Quit();
     }
 
-    #region States
-    void runState() {
-        if (state == State.notPlaying) {
-
-        }
-        else if (state == State.playing) {
-            addNewRandomRoutine();
-        }
-    }
-    #endregion
-
     #region Misc
-    void addNewRandomRoutine() {
-        if (runTimerAddRandom) {
-            if (timerAddRandom <= 0f) {
-                addRandomToRandomColumn();
-                timerAddRandom = delayAddRandom;
-            }
-            else {
-                timerAddRandom -= Time.deltaTime;
-            }
-        }
-    }
-
     void setupGame() {
-        /*
-        for (int i = 0; i < gg.GetColumnCount(); i++) {
-            for (int j = 0; j < 2; j++) {
-                int randomValue = Random.Range(1, 9);
-                gg.AddToColumn(randomValue, i);
-            }
-        }
-        */
-        gg.fillGrid();
-
-        gg.selector.SetActive(true);
-        //timerAddRandom = delayAddRandom;
-        //runTimerAddRandom = true;
+        gg.initGrid();
         score.setScore(0);
     }
 
-    void addRandomToRandomColumn() {
-        gg.AddToColumn(Random.Range(1, 10), Random.Range(0, gg.GetColumnCount()));
-    }
 
     enum State {
         notPlaying,
@@ -280,7 +203,7 @@ public class PlayerManager : MonoBehaviour
     }
     #endregion
 
-    bool[,] elementsToPositionArray(List<GameElement> elements) {
+    bool[,] elementsToPositionArray(List<GameGrid.Element> elements) {
         bool[,] output = new bool[gg.GetColumnCount(), gg.GetRowCount()];
 
         for (int i = 0; i < output.GetLength(0); i++) {
@@ -291,7 +214,7 @@ public class PlayerManager : MonoBehaviour
 
 
         foreach (var e in elements) {
-            output[e.column, e.row] = true;
+            output[e.x, e.y] = true;
         }
 
         return output;
