@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour {
     public GameObject buttonTutorial2;
 
     public Image countDownBar;
+    public Image cdBackground;
+    public Image cdOutline;
 
     public TextMeshProUGUI resultText;
     public GameObject result;
@@ -25,6 +27,9 @@ public class GameManager : MonoBehaviour {
         result.SetActive(false);
         p1.sendCombo.AddListener(p2.applyCombo);
         p2.sendCombo.AddListener(p1.applyCombo);
+        countDownBar.enabled = false;
+        cdBackground.enabled = false;
+        cdOutline.enabled = false;
         //countDownBar.GetComponent<Image>().enabled = false;
     }
 
@@ -35,6 +40,9 @@ public class GameManager : MonoBehaviour {
         buttonTutorial2.SetActive(false);
         newGameButton.SetActive(false);
         result.SetActive(false);
+        countDownBar.enabled = true;
+        cdBackground.enabled = true;
+        cdOutline.enabled = true;
         timeLeft = gameTime;
         
         StartCoroutine(gameCountdown());
@@ -45,7 +53,6 @@ public class GameManager : MonoBehaviour {
             yield return new WaitForSeconds(0.1f);
             timeLeft -= 0.1f;
             countDownBar.fillAmount = timeLeft / gameTime;
-            countDownBar.GetComponent<Image>().enabled = true;
         }
         endGame();
     }
@@ -65,6 +72,10 @@ public class GameManager : MonoBehaviour {
         else {
             resultText.text = "Right win! -->";
         }
+
+        countDownBar.enabled = false;
+        cdBackground.enabled = false;
+        cdOutline.enabled = false;
     }
 
     public void ExitGame() {

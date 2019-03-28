@@ -31,6 +31,7 @@ public class PlayerManager : MonoBehaviour {
     }
 
     public void onSelection(List<GameGrid.Element> elements) {
+        print(Constants.elementListToString(elements));
         if (checkSolution(elements)) {
             score.addScore(elements.Count);
             ComboType combo = checkCombo(elements);

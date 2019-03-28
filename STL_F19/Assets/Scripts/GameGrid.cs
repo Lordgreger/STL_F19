@@ -189,6 +189,8 @@ public class GameGrid : MonoBehaviour {
             gc.destroyElement(e);
         }
 
+        gc.fixCols();
+
         foreach (var c in columnsToFix) {
             fixColumn(c);
             fillColumn(c);
