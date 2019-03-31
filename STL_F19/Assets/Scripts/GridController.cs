@@ -87,6 +87,14 @@ public class GridController : MonoBehaviour {
         }
     }
 
+    public Vector2 elementPos(GameGrid.Element e) {
+        GameObject go = grid[e.x, e.y];
+        Vector2 pos = ((Vector2)go.transform.localPosition
+            + (Vector2)elementParent.parent.localPosition);
+        pos.x = -pos.x;
+        return pos;
+    }
+
     public void destroyElement(GameGrid.Element e) {
         GameObject go = grid[e.x, e.y];
         grid[e.x, e.y] = null;

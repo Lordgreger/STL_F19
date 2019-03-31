@@ -27,6 +27,12 @@ public class GameGrid : MonoBehaviour {
     // Get functions
     public int GetColumnCount() { return grid.GetLength(0); }
     public int GetRowCount() { return grid.GetLength(1); }
+    public Vector2 GetElementRealPos(Element e) {
+        return gc.elementPos(e);
+    }
+    public Vector2 GetElementRealPos(int x, int y) {
+        return gc.elementPos(grid[x, y]);
+    }
 
     public class Element {
         public int x, y, value;
@@ -236,6 +242,10 @@ public class GameGrid : MonoBehaviour {
     }
 
     #region Combos
+    public void disableElement(int x, int y, float time) {
+        timedLock(time, grid[x, y]);
+    }
+
     public void disableRLBlocks(float time) {
         int startBlockColoum = Random.Range(0, grid.GetLength(0) - 2);
         int startBlockRow = Random.Range(2, grid.GetLength(1) - 1);

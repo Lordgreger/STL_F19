@@ -7,10 +7,12 @@ public class PlayerManager : MonoBehaviour {
     public Target target;
     public Score score;
     public GameGrid gg;
-    public UnityEvent<ComboType> sendCombo = new ComboEvent();
+    public EffectsCreator ec;
+    public UnityEvent<Combo> sendCombo = new ComboEvent();
 
     public enum ComboType {
         None,
+        MoreThanOne,
         ReverseLBlock,
         LBlock,
         TBlock, 
@@ -20,7 +22,7 @@ public class PlayerManager : MonoBehaviour {
         OBlock
     }
 
-    [System.Serializable] public class ComboEvent : UnityEvent<ComboType> {}
+    [System.Serializable] public class ComboEvent : UnityEvent<Combo> {}
 
     State state;
     int currentTarget;
@@ -34,8 +36,9 @@ public class PlayerManager : MonoBehaviour {
         print(Constants.elementListToString(elements));
         if (checkSolution(elements)) {
             score.addScore(elements.Count);
-            ComboType combo = checkCombo(elements);
-            if (combo != ComboType.None) {
+            ComboType comboType = checkCombo(elements);
+            if (comboType != ComboType.None) {
+                Combo combo = new Combo(this, comboType, elements);
                 sendCombo.Invoke(combo);
             }
 
@@ -45,12 +48,21 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
-    public void applyCombo(ComboType type) {
-        switch (type) {
+    public void applyCombo(Combo combo) {
+        switch (combo.type) {
 
+            case ComboType.MoreThanOne:
+                ec.createBeams(combo.parameters, gg);
+                for (int i = 0; i < combo.parameters.Length; i += 4) {
+                    gg.disableElement((int)combo.parameters[i + 2], (int)combo.parameters[i + 3], 5f);
+                }
+                break;
+
+            
             case ComboType.None:
                 break;
 
+            /*
             case ComboType.LBlock:
                 gg.disableLBlocks(10);
                 break;
@@ -79,6 +91,8 @@ public class PlayerManager : MonoBehaviour {
                 gg.disableOBlock(10);
                 break;
 
+            */
+
             default:
                 break;
         }
@@ -98,8 +112,32 @@ public class PlayerManager : MonoBehaviour {
         }
     }
 
+    public class Combo {
+        public ComboType type;
+        public float[] parameters;
+
+        public Combo(PlayerManager pm, ComboType type, List<GameGrid.Element> elements) {
+            this.type = type;
+
+            if (type == ComboType.MoreThanOne) {
+                parameters = new float[elements.Count * 4];
+                for (int i = 0; i < elements.Count * 4; i += 4) {
+                    // From
+                    Vector2 realPos = pm.gg.GetElementRealPos(elements[i / 4]);
+                    parameters[i] = realPos.x;
+                    parameters[i + 1] = realPos.y;
+
+                    // To
+                    parameters[i + 2] = (int)Random.Range(0, Constants.gridElementsX);
+                    parameters[i + 3] = (int)Random.Range(0, Constants.gridElementsY);
+                }
+            }
+        }
+    }
+
     ComboType checkCombo(List<GameGrid.Element> elements) {
 
+        /*
         // Create position array from elements
         bool[,] arr = elementsToPositionArray(elements);
 
@@ -167,6 +205,11 @@ public class PlayerManager : MonoBehaviour {
         bool[,] o1Mask = new bool[,] { { true, true }, { true, true } };
         if (checkArrayForMask(arr, o1Mask)) {
             return ComboType.OBlock;
+        }
+        */
+
+        if (elements.Count > 1) {
+            return ComboType.MoreThanOne;
         }
 
         return ComboType.None;
