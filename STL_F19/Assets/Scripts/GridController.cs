@@ -90,7 +90,19 @@ public class GridController : MonoBehaviour {
     public void destroyElement(GameGrid.Element e) {
         GameObject go = grid[e.x, e.y];
         grid[e.x, e.y] = null;
-        Destroy(go);
+        go.GetComponent<Image>().enabled = false;
+        GridElementVisuals ev = go.GetComponent<GridElementVisuals>();
+        ev.StartDestructionAnimation();
+        Destroy(go, ev.getDestructionTime());
+    }
+
+    public void destroyElement(int x, int y) {
+        GameObject go = grid[x, y];
+        grid[x, y] = null;
+        go.GetComponent<Image>().enabled = false;
+        GridElementVisuals ev = go.GetComponent<GridElementVisuals>();
+        ev.StartDestructionAnimation();
+        Destroy(go, ev.getDestructionTime());
     }
 
     public void setFollowSelector(int[] selectorPos) {
@@ -107,25 +119,25 @@ public class GridController : MonoBehaviour {
     }
 
     public void setSelected(GameGrid.Element e) {
-        grid[e.x, e.y].GetComponent<Image>().color = Color.red;
+        grid[e.x, e.y].GetComponent<GridElementVisuals>().setSelected(true);
     }
 
     public void clearSelected(GameGrid.Element e) {
-        grid[e.x, e.y].GetComponent<Image>().color = Color.white;
+        grid[e.x, e.y].GetComponent<GridElementVisuals>().setSelected(false);
     }
 
     public void setLocked(GameGrid.Element e) {
-        grid[e.x, e.y].GetComponent<Image>().color = Color.black;
+        grid[e.x, e.y].GetComponent<GridElementVisuals>().setLocked(true);
     }
 
     public void clearLocked(GameGrid.Element e) {
-        grid[e.x, e.y].GetComponent<Image>().color = Color.white;
+        grid[e.x, e.y].GetComponent<GridElementVisuals>().setLocked(false);
     }
 
     public void destroyAll() {
         for (int i = 0; i < grid.GetLength(0); i++) {
             for (int j = 0; j < grid.GetLength(1); j++) {
-                Destroy(grid[i, j]);
+                destroyElement(i, j);
                 grid[i, j] = null;
             }
         }
