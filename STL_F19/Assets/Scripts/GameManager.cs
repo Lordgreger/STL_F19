@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour {
     public Image countDownBar;
     public Image cdBackground;
     public Image cdOutline;
+    public Image gridBackgroundP1;
+    public Image gridBackgroundP2;
 
     public TextMeshProUGUI resultText;
     public GameObject result;
@@ -30,6 +32,8 @@ public class GameManager : MonoBehaviour {
         countDownBar.enabled = false;
         cdBackground.enabled = false;
         cdOutline.enabled = false;
+        gridBackgroundP1.enabled = false;
+        gridBackgroundP2.enabled = false;
         //countDownBar.GetComponent<Image>().enabled = false;
     }
 
@@ -43,6 +47,8 @@ public class GameManager : MonoBehaviour {
         countDownBar.enabled = true;
         cdBackground.enabled = true;
         cdOutline.enabled = true;
+        gridBackgroundP1.enabled = true;
+        gridBackgroundP2.enabled = true;
         timeLeft = gameTime;
         
         StartCoroutine(gameCountdown());

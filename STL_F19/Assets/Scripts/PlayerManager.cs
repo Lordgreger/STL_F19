@@ -9,6 +9,9 @@ public class PlayerManager : MonoBehaviour {
     public GameGrid gg;
     public EffectsCreator ec;
     public UnityEvent<Combo> sendCombo = new ComboEvent();
+    public AudioClip[] soundsList;
+
+    AudioSource soundEFX;
 
     public enum ComboType {
         None,
@@ -30,12 +33,14 @@ public class PlayerManager : MonoBehaviour {
     private void Start() {
         state = State.notPlaying;
         gg.selectionEvent.AddListener(onSelection);
+        soundEFX = GetComponent<AudioSource>();
     }
 
     public void onSelection(List<GameGrid.Element> elements) {
         print(Constants.elementListToString(elements));
         if (checkSolution(elements)) {
             score.addScore(elements.Count);
+            soundEFX.PlayOneShot(soundsList[1], 0.8f);
             ComboType comboType = checkCombo(elements);
             if (comboType != ComboType.None) {
                 Combo combo = new Combo(this, comboType, elements);
@@ -45,6 +50,8 @@ public class PlayerManager : MonoBehaviour {
             target.setNewTarget();
             gg.removeElements(elements);
             
+        } else {
+            soundEFX.PlayOneShot(soundsList[0], 0.5f);
         }
     }
 

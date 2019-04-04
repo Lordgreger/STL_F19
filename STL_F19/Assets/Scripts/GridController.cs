@@ -40,7 +40,11 @@ public class GridController : MonoBehaviour {
     public void spawnMulNewInCol(int c, List<int> vals) {
         for (int i = 0; i < vals.Count; i++) {
             GameObject go = Instantiate(elementPrefab, elementParent);
+// Updated upstream
             go.transform.localPosition = new Vector3((c - (Constants.gridElementsX / 2)) * elementSize + (1f * c), 200f + (elementSize * 1.2f * (Constants.gridElementsY + i + 1)));
+
+            go.transform.localPosition = new Vector3((c - (Constants.gridElementsX / 2)) * elementSize + (2f * c), (elementSize * (Constants.gridElementsY * 2 + i + 1)));
+// Stashed changes
             go.GetComponent<Image>().sprite = sprites[vals[i] - 1];
             if (!addToGrid(c, go)) {
                 Destroy(go);
