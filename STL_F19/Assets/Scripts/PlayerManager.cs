@@ -47,9 +47,13 @@ public class PlayerManager : MonoBehaviour {
                 sendCombo.Invoke(combo);
             }
 
+            Vector2 pos = gg.GetElementRealPos(elements[elements.Count - 1]);
+            pos.x = -pos.x;
+            ec.createPopUp(pos, elements.Count);
+
             target.setNewTarget();
             gg.removeElements(elements);
-            
+
         } else {
             soundEFX.PlayOneShot(soundsList[0], 0.5f);
         }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3128,6 +3128,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beamPrefab: {fileID: 3787329100573995136, guid: 9597d2ec01fafad44acb5aa41fe1eaba,
+    type: 3}
+  popUpPrefab: {fileID: 4763254608928754297, guid: e2d71aa2298d0704dac7b15cfff8cb70,
     type: 3}
 --- !u!1 &1329681290
 GameObject:
