@@ -26,7 +26,7 @@ public class GridElementVisuals : MonoBehaviour {
 
     public void setLocked(bool i) {
         locked.enabled = i;
-        image.enabled = !i;
+        //image.enabled = !i;
     }
 
     public void StartDestructionAnimation() {
