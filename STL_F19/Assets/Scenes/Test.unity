@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4326,7 +4326,7 @@ MonoBehaviour:
   gg: {fileID: 1775381214}
   ec: {fileID: 1202643795}
   soundsList:
-  - {fileID: 8300000, guid: 9c56ce8056ce1e9468410a6c5303d2c2, type: 3}
+  - {fileID: 8300000, guid: e9df0bbf5f5abbd4a8e0e48a5981804d, type: 3}
   - {fileID: 8300000, guid: 0781cc143cb1378429caaf8d45281b92, type: 3}
 --- !u!114 &1775381217
 MonoBehaviour:
@@ -5202,7 +5202,7 @@ MonoBehaviour:
   gg: {fileID: 1890750817}
   ec: {fileID: 1202643795}
   soundsList:
-  - {fileID: 8300000, guid: 9c56ce8056ce1e9468410a6c5303d2c2, type: 3}
+  - {fileID: 8300000, guid: e9df0bbf5f5abbd4a8e0e48a5981804d, type: 3}
   - {fileID: 8300000, guid: 0781cc143cb1378429caaf8d45281b92, type: 3}
 --- !u!114 &1890750817
 MonoBehaviour:
