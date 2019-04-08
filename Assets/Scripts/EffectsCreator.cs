@@ -30,7 +30,7 @@ public class EffectsCreator : MonoBehaviour {
         GameObject go = Instantiate(popUpPrefab, this.transform.parent);
         print(pos);
         go.GetComponent<RectTransform>().anchoredPosition = pos;
-        go.GetComponentInChildren<TextMeshProUGUI>().text = "+ " + val.ToString();
+        go.GetComponentInChildren<TextMeshProUGUI>().text = "+" + val.ToString();
         Destroy(go, 1.2f);
     }
 
