@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -156,9 +156,10 @@ MonoBehaviour:
   resultTextP1: {fileID: 2085861990}
   resultTextP2: {fileID: 1481760235}
   result: {fileID: 1613142242}
+  tie: {fileID: 21300000, guid: 0ea08a3b62e2d2e4b9e2e0ebbfcc9faf, type: 3}
   p1Wins: {fileID: 21300000, guid: 60cbc4cbd3f60c644a74cd7aa6ec5a32, type: 3}
   p2Wins: {fileID: 21300000, guid: 755944531e94f944d83084d051ffe819, type: 3}
-  gameTime: 10
+  gameTime: 5
 --- !u!4 &66790756
 Transform:
   m_ObjectHideFlags: 0
@@ -1094,7 +1095,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &361445317
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2054,7 +2055,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &555510295
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4074,6 +4075,7 @@ GameObject:
   - component: {fileID: 1613142243}
   - component: {fileID: 1613142245}
   - component: {fileID: 1613142244}
+  - component: {fileID: 1613142246}
   m_Layer: 5
   m_Name: Result
   m_TagString: Untagged
@@ -4139,6 +4141,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1613142242}
   m_CullTransparentMesh: 0
+--- !u!95 &1613142246
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613142242}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5bf3f05508f07e047989845dfbb4ba8e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1647334487
 GameObject:
   m_ObjectHideFlags: 0

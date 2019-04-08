@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
     public TextMeshProUGUI resultTextP1;
     public TextMeshProUGUI resultTextP2;
     public GameObject result;
+    public Sprite tie;
     public Sprite p1Wins;
     public Sprite p2Wins;
 
@@ -88,7 +89,7 @@ public class GameManager : MonoBehaviour {
         
 
         if (p1.score.getScore() == p2.score.getScore()) {
-            resultImg.sprite = p1Wins; //shall be the tie sprite
+            resultImg.sprite = tie;
         }
         else if (p1.score.getScore() > p2.score.getScore()) {
             resultImg.sprite = p1Wins;
