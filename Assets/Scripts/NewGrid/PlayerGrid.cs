@@ -17,6 +17,7 @@ public class PlayerGrid : MonoBehaviour {
     bool selectorActive;
     int selectorX;
     int selectorY;
+    List<Element> selectedElements;
 
     // Definitions
     struct Element {
@@ -27,14 +28,33 @@ public class PlayerGrid : MonoBehaviour {
 
     #region Unity Scheduling
     private void Start() {
-        elementGrid = new Element[gridWidth, gridHeight];
-        initElementGrid(elementGrid);
-        printElementGrid(elementGrid);
+        SetupGrid();
+        SetupSelector();
+        SetupSelected();
     }
 
     private void Update() {
         
     }
+    #endregion
+
+    #region Setup
+    void SetupGrid() {
+        elementGrid = new Element[gridWidth, gridHeight];
+        initElementGrid(elementGrid);
+        printElementGrid(elementGrid);
+    }
+
+    void SetupSelector() {
+        selectorActive = false;
+        selectorX = 0;
+        selectorY = 0;
+    }
+
+    void SetupSelected() {
+        selectedElements = new List<Element>();
+    }
+
     #endregion
 
     #region Internal Grid
@@ -50,6 +70,53 @@ public class PlayerGrid : MonoBehaviour {
     #endregion
 
     #region Selector
+    void MoveSelector(string dir) {
+        switch (dir) {
+
+            case "Up":
+                if (selectorY < gridHeight - 1) {
+                    selectorY += 1;
+                }
+                else {
+                    selectorY = gridHeight;
+                }
+                break;
+
+            case "Down":
+                if (selectorY > 1) {
+                    selectorY -= 1;
+                }
+                else {
+                    selectorY = 0;
+                }
+                break;
+
+            case "Right":
+                if (selectorX < gridWidth - 1) {
+                    selectorX += 1;
+                }
+                else {
+                    selectorX = gridWidth;
+                }
+                break;
+
+            case "Left":
+                if (selectorX > 1) {
+                    selectorX -= 1;
+                }
+                else {
+                    selectorX = 0;
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    void SetSelectorActive(bool active) {
+        selectorActive = active;
+    }
 
     #endregion
 
