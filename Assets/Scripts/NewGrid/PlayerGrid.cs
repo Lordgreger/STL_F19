@@ -120,6 +120,35 @@ public class PlayerGrid : MonoBehaviour {
 
     #endregion
 
+    #region Input
+    void HandleKeyboardInput() {
+        if (Input.GetKeyDown(KeyCode.W)) {
+            MoveSelector("Up");
+        }
+        else if (Input.GetKeyDown(KeyCode.S)) {
+            MoveSelector("Down");
+        }
+        else if (Input.GetKeyDown(KeyCode.A)) {
+            MoveSelector("Left");
+        }
+        else if (Input.GetKeyDown(KeyCode.D)) {
+            MoveSelector("Right");
+        }
+
+        if (Input.GetKeyDown(KeyCode.L)) {
+            SetSelectorActive(true);
+        }
+        else if (Input.GetKeyUp(KeyCode.L)) {
+            SetSelectorActive(false);
+        }
+    }
+
+    public void gridElementInput(int x, int y) {
+
+    }
+
+    #endregion
+
     #region Print
     void printElementGrid(Element[,] grid) {
         string output = "";
@@ -134,5 +163,12 @@ public class PlayerGrid : MonoBehaviour {
     }
     #endregion
 
+}
 
+public struct GridPos {
+    int x, y;
+    public GridPos(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 }
