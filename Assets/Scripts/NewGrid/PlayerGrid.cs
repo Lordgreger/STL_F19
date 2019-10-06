@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerGrid : MonoBehaviour {
     #region Variables
@@ -13,11 +14,13 @@ public class PlayerGrid : MonoBehaviour {
     public int targetValMin;
     public float gridElementDistance;
     public GameObject gridElementPrefab;
+    public TextMeshPro targetText;
+    public GameObject[,] elements = new GameObject[3,3];
 
     // Private
     //Element[,] elementGrid;
     int currentTarget;
-    GameObject[,] elements;
+    //GameObject[,] elements;
     bool selectorActive;
     int selectorX;
     int selectorY;
@@ -32,9 +35,10 @@ public class PlayerGrid : MonoBehaviour {
 
     #region Unity Scheduling
     private void Start() {
-        SetupGrid();
+        GenerateGrid();
         SetupSelector();
         SetupSelected();
+        NewRandomTarget();
     }
 
     private void Update() {
@@ -43,18 +47,22 @@ public class PlayerGrid : MonoBehaviour {
     #endregion
 
     #region Setup
-    void SetupGrid() {
+    void GenerateGrid() {
         elements = new GameObject[gridWidth, gridHeight];
+
+        float halfTotalSizeX = halfTotalSizeX = (((float)elements.GetLength(0) * (float)gridElementDistance) / 2f) - (gridElementDistance / 2f);
+        float halfTotalSizeY = halfTotalSizeY = (((float)elements.GetLength(1) * (float)gridElementDistance) / 2f) - (gridElementDistance / 2f);
+
         for (int i = 0; i < elements.GetLength(0); i++) {
             for (int j = 0; j < elements.GetLength(1); j++) {
                 GameObject go = Instantiate<GameObject>(gridElementPrefab, transform);
                 elements[i, j] = go;
-                go.transform.position = new Vector3(i * gridElementDistance, j * gridElementDistance, 0);
+                go.transform.position = new Vector3((i * gridElementDistance) - halfTotalSizeX, (j * gridElementDistance) - halfTotalSizeY, 0);
 
                 GridElementButton ge = go.GetComponent<GridElementButton>();
                 ge.gridController = this;
+                ge.pos = new GridPos(i, j);
                 ReRollGridElement(ge);
-                
             }
         }
     }
@@ -139,14 +147,40 @@ public class PlayerGrid : MonoBehaviour {
     #region Selected
     public void AddToSelected(GridElementButton ge) {
         if (ge.activated == false) {
-            selectedElements.Add(ge);
-            ge.activated = true;
+            if (ValidateSelectedCandidate(ge)) {
+                selectedElements.Add(ge);
+                ge.activated = true;
+                ge.setSelected();
+            }
         }
+    }
+
+    bool ValidateSelectedCandidate(GridElementButton candidate) {
+        if (selectedElements.Count == 0) {
+            return true;
+        }
+
+        foreach (var ge in selectedElements) {
+            if (ge.pos.x == candidate.pos.x) { // check y diff
+                int diff = ge.pos.y - candidate.pos.y;
+                if (diff == 1 || diff == -1) {
+                    return true;
+                }
+            }
+            else if (ge.pos.y == candidate.pos.y) { // check x diff
+                int diff = ge.pos.x - candidate.pos.x;
+                if (diff == 1 || diff == -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     void ResetSelected() {
         foreach (var ge in selectedElements) {
             ge.activated = false;
+            ge.resetSelected();
         }
         selectedElements.Clear();
     }
@@ -169,10 +203,40 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
 
-    void ReRollGridElement(GridElementButton ge) {
-        ge.val = Random.Range(gridValMin, gridValMax + 1);
+    void ReRollSelectedNewGuaranteed() {
+        foreach (var ge in selectedElements) {
+            ReRollGridElementNewGuaranteed(ge);
+        }
     }
 
+    void ReRollGridElement(GridElementButton ge) {
+        ge.setValAndReset(Random.Range(gridValMin, gridValMax + 1));
+    }
+
+    void ReRollGridElementNewGuaranteed(GridElementButton ge) {
+        int newVal = Random.Range(gridValMin, gridValMax + 1);
+        if (ge.val == newVal) {
+            ReRollGridElementNewGuaranteed(ge);
+        }
+        else {
+            ge.setValAndReset(newVal);
+        }
+    }
+
+    #endregion
+
+    #region Target 
+    void NewRandomTarget() {
+        int newTarget = Random.Range(targetValMin, targetValMax + 1);
+        if (newTarget == currentTarget) {
+            NewRandomTarget();
+        }
+        else {
+            currentTarget = newTarget;
+            targetText.text = currentTarget.ToString();
+        }
+        
+    }
     #endregion
 
     #region Input
@@ -203,9 +267,11 @@ public class PlayerGrid : MonoBehaviour {
             printSelected();
             if (selectedElements.Count > 0) {
                 if (CheckSelected()) {
-
+                    ReRollSelectedNewGuaranteed();
+                    NewRandomTarget();
                 }
                 else {
+
                 }
             }
             ResetSelected();
@@ -238,8 +304,9 @@ public class PlayerGrid : MonoBehaviour {
 
 }
 
+[System.Serializable]
 public struct GridPos {
-    int x, y;
+    public int x, y;
     public GridPos(int x, int y) {
         this.x = x;
         this.y = y;
