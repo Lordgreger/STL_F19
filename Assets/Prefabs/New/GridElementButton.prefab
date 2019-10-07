@@ -111,6 +111,7 @@ MonoBehaviour:
     y: 0
   val: 0
   activated: 0
+  idle: 0
   numberMaterials:
   - {fileID: 2100000, guid: c22e4bd108a04094db5325345073baf3, type: 2}
   - {fileID: 2100000, guid: 933c20fa5d252b14db14f31ab7ba3881, type: 2}
@@ -119,6 +120,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 6def9db5eb3df9a469c663ef1d6e7913, type: 2}
   - {fileID: 2100000, guid: 19277fd813161314f8cf60657b4b4920, type: 2}
   - {fileID: 2100000, guid: 03e25fcecd6e0484ab0158fe342af14e, type: 2}
+  idleMaterial: {fileID: 2100000, guid: 141a7c07425c82542a2fa62d701c6366, type: 2}
   rendererRef: {fileID: 1069030171115567423}
   selectedRendererRef: {fileID: 7604024972791353714}
 --- !u!1 &7144594833889821666

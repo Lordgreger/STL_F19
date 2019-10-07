@@ -7,17 +7,21 @@ public class GridElementButton : MonoBehaviour {
     public PlayerGrid gridController;
     public GridPos pos;
     public int val;
-    public bool activated;
+    public bool activated; // When selected
+    public bool idle; // When not playing the game
     public Material[] numberMaterials;
+    public Material idleMaterial;
     public MeshRenderer rendererRef;
     public MeshRenderer selectedRendererRef;
 
     private void Start() {
-        activated = false;
+        setIdle();
         selectedRendererRef.enabled = false;
     }
 
     private void OnMouseEnter() {
+        if (idle) { return; } // Catch for idle
+
         Debug.Log("Mouse entered");
         if (Input.GetMouseButton(0)) {
             //setSelected();
@@ -26,6 +30,8 @@ public class GridElementButton : MonoBehaviour {
     }
 
     private void OnMouseDown() {
+        if (idle) { return; } // Catch for idle
+
         Debug.Log("Mouse down object");
         //setSelected();
         gridController.AddToSelected(this);
@@ -42,6 +48,18 @@ public class GridElementButton : MonoBehaviour {
     public void setValAndReset(int i) {
         setVal(i);
         resetSelected();
+    }
+
+    public void setIdle() {
+        idle = true;
+        activated = false;
+        rendererRef.material = idleMaterial;
+        resetSelected();
+    }
+
+    public void setActive() {
+        idle = false;
+        setVal(val);
     }
 
     #endregion

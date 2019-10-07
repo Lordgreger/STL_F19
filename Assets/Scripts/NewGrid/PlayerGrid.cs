@@ -15,7 +15,7 @@ public class PlayerGrid : MonoBehaviour {
     public float gridElementDistance;
     public GameObject gridElementPrefab;
     public TextMeshPro targetText;
-    public GameObject[,] elements = new GameObject[3,3];
+    public GridElementButton[,] elements = new GridElementButton[3,3];
 
     // Private
     //Element[,] elementGrid;
@@ -39,6 +39,7 @@ public class PlayerGrid : MonoBehaviour {
         SetupSelector();
         SetupSelected();
         NewRandomTarget();
+        SetGridIdle();
     }
 
     private void Update() {
@@ -48,7 +49,7 @@ public class PlayerGrid : MonoBehaviour {
 
     #region Setup
     void GenerateGrid() {
-        elements = new GameObject[gridWidth, gridHeight];
+        elements = new GridElementButton[gridWidth, gridHeight];
 
         float halfTotalSizeX = halfTotalSizeX = (((float)elements.GetLength(0) * (float)gridElementDistance) / 2f) - (gridElementDistance / 2f);
         float halfTotalSizeY = halfTotalSizeY = (((float)elements.GetLength(1) * (float)gridElementDistance) / 2f) - (gridElementDistance / 2f);
@@ -56,10 +57,10 @@ public class PlayerGrid : MonoBehaviour {
         for (int i = 0; i < elements.GetLength(0); i++) {
             for (int j = 0; j < elements.GetLength(1); j++) {
                 GameObject go = Instantiate<GameObject>(gridElementPrefab, transform);
-                elements[i, j] = go;
                 go.transform.position = new Vector3((i * gridElementDistance) - halfTotalSizeX, (j * gridElementDistance) - halfTotalSizeY, 0);
 
                 GridElementButton ge = go.GetComponent<GridElementButton>();
+                elements[i, j] = ge;
                 ge.gridController = this;
                 ge.pos = new GridPos(i, j);
                 ReRollGridElement(ge);
@@ -90,6 +91,25 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
     */
+
+    void SetGridIdle() {
+        foreach (var ge in elements) {
+            ge.setIdle();
+        }
+    }
+
+    void SetGridActive() {
+        foreach (var ge in elements) {
+            ge.setActive();
+        }
+    }
+
+    void SetupNewStartGrid() {
+        foreach (var ge in elements) {
+            ge.setActive();
+            ReRollGridElement(ge);
+        }
+    }
 
     #endregion
 
