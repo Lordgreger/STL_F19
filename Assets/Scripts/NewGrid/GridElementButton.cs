@@ -4,27 +4,25 @@ using UnityEngine;
 
 public class GridElementButton : MonoBehaviour {
 
-    public PlayerGrid gridController;
-    public GridPos pos;
-    public int val;
-    public bool activated; // When selected
+    public PlayerGrid gridController; // Ref to controller
+    public GridPos pos; // Pos in grid
+    public int val; // Current value
+    public bool selected; // Is selected
     public bool idle; // When not playing the game
-    public Material[] numberMaterials;
-    public Material idleMaterial;
-    public MeshRenderer rendererRef;
-    public MeshRenderer selectedRendererRef;
+    public Material[] numberMaterials; // Ref to metarials for numbers
+    public Material idleMaterial; // Ref to idle material
+    public MeshRenderer rendererRef; // Ref to renderer
+    public MeshRenderer selectedRendererRef; // Ref to selected box renderer
 
     private void Start() {
-        setIdle();
+        //setIdle();
         selectedRendererRef.enabled = false;
     }
 
     private void OnMouseEnter() {
         if (idle) { return; } // Catch for idle
 
-        Debug.Log("Mouse entered");
         if (Input.GetMouseButton(0)) {
-            //setSelected();
             gridController.AddToSelected(this); 
         }
     }
@@ -32,12 +30,11 @@ public class GridElementButton : MonoBehaviour {
     private void OnMouseDown() {
         if (idle) { return; } // Catch for idle
 
-        Debug.Log("Mouse down object");
-        //setSelected();
         gridController.AddToSelected(this);
     }
 
     #region Public Sets
+    // Sets new val and updates graphics
     public void setVal(int i) {
         if (i > 0 && i < 8) { // Valid number
             rendererRef.material = numberMaterials[i - 1];
@@ -45,23 +42,25 @@ public class GridElementButton : MonoBehaviour {
         }
     }
 
+    // Sets new val and resets selected params
     public void setValAndReset(int i) {
         setVal(i);
         resetSelected();
     }
 
+    // Sets element to be idle and updates graphics
     public void setIdle() {
         idle = true;
-        activated = false;
+        selected = false;
         rendererRef.material = idleMaterial;
         resetSelected();
     }
 
+    // Sets elelment to be active and updates graphics
     public void setActive() {
         idle = false;
         setVal(val);
     }
-
     #endregion
 
     #region Misc

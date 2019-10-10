@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
 
 public class PlayerGrid : MonoBehaviour {
     #region Variables
@@ -16,34 +17,45 @@ public class PlayerGrid : MonoBehaviour {
     public GameObject gridElementPrefab;
     public TextMeshPro targetText;
     public GridElementButton[,] elements = new GridElementButton[3,3];
+    public IntEvent scored = new IntEvent();
 
     // Private
-    //Element[,] elementGrid;
     int currentTarget;
-    //GameObject[,] elements;
-    bool selectorActive;
-    int selectorX;
-    int selectorY;
     List<GridElementButton> selectedElements;
+    
 
     // Definitions
     struct Element {
         public int value;
     }
 
+    [System.Serializable]
+    public class IntEvent : UnityEvent<int> {}
+
     #endregion
 
     #region Unity Scheduling
     private void Start() {
         GenerateGrid();
-        SetupSelector();
         SetupSelected();
-        NewRandomTarget();
+        SetTargetIdle();
         SetGridIdle();
     }
 
     private void Update() {
         HandleMouseRelease();
+    }
+    #endregion
+
+    #region Control
+    public void StartNewGame() {
+        SetupNewStartGrid();
+        NewRandomTarget();
+    }
+
+    public void EndGame() {
+        SetGridIdle();
+        SetTargetIdle();
     }
     #endregion
 
@@ -68,12 +80,6 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
 
-    void SetupSelector() {
-        selectorActive = false;
-        selectorX = 0;
-        selectorY = 0;
-    }
-
     void SetupSelected() {
         selectedElements = new List<GridElementButton>();
     }
@@ -81,17 +87,6 @@ public class PlayerGrid : MonoBehaviour {
     #endregion
 
     #region Grid
-    /* OLD
-    void initElementGrid(Element[,] grid) {
-        for (int i = 0; i < grid.GetLength(0); i++) {
-            for (int j = 0; j < grid.GetLength(1); j++) {
-                grid[i, j] = new Element();
-                grid[i, j].value = Random.Range(gridValMin, gridValMax + 1);
-            }
-        }
-    }
-    */
-
     void SetGridIdle() {
         foreach (var ge in elements) {
             ge.setIdle();
@@ -113,63 +108,12 @@ public class PlayerGrid : MonoBehaviour {
 
     #endregion
 
-    #region Selector
-    void MoveSelector(string dir) {
-        switch (dir) {
-
-            case "Up":
-                if (selectorY < gridHeight - 1) {
-                    selectorY += 1;
-                }
-                else {
-                    selectorY = gridHeight;
-                }
-                break;
-
-            case "Down":
-                if (selectorY > 1) {
-                    selectorY -= 1;
-                }
-                else {
-                    selectorY = 0;
-                }
-                break;
-
-            case "Right":
-                if (selectorX < gridWidth - 1) {
-                    selectorX += 1;
-                }
-                else {
-                    selectorX = gridWidth;
-                }
-                break;
-
-            case "Left":
-                if (selectorX > 1) {
-                    selectorX -= 1;
-                }
-                else {
-                    selectorX = 0;
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    void SetSelectorActive(bool active) {
-        selectorActive = active;
-    }
-
-    #endregion
-
     #region Selected
     public void AddToSelected(GridElementButton ge) {
-        if (ge.activated == false) {
+        if (ge.selected == false) {
             if (ValidateSelectedCandidate(ge)) {
                 selectedElements.Add(ge);
-                ge.activated = true;
+                ge.selected = true;
                 ge.setSelected();
             }
         }
@@ -199,7 +143,7 @@ public class PlayerGrid : MonoBehaviour {
 
     void ResetSelected() {
         foreach (var ge in selectedElements) {
-            ge.activated = false;
+            ge.selected = false;
             ge.resetSelected();
         }
         selectedElements.Clear();
@@ -257,31 +201,13 @@ public class PlayerGrid : MonoBehaviour {
         }
         
     }
+
+    void SetTargetIdle() {
+        targetText.text = "";
+    }
     #endregion
 
     #region Input
-    void HandleKeyboardInput() {
-        if (Input.GetKeyDown(KeyCode.W)) {
-            MoveSelector("Up");
-        }
-        else if (Input.GetKeyDown(KeyCode.S)) {
-            MoveSelector("Down");
-        }
-        else if (Input.GetKeyDown(KeyCode.A)) {
-            MoveSelector("Left");
-        }
-        else if (Input.GetKeyDown(KeyCode.D)) {
-            MoveSelector("Right");
-        }
-
-        if (Input.GetKeyDown(KeyCode.L)) {
-            SetSelectorActive(true);
-        }
-        else if (Input.GetKeyUp(KeyCode.L)) {
-            SetSelectorActive(false);
-        }
-    }
-
     void HandleMouseRelease() {
         if (Input.GetMouseButtonUp(0)) {
             printSelected();
@@ -289,6 +215,7 @@ public class PlayerGrid : MonoBehaviour {
                 if (CheckSelected()) {
                     ReRollSelectedNewGuaranteed();
                     NewRandomTarget();
+                    scored.Invoke(selectedElements.Count);
                 }
                 else {
 
@@ -321,7 +248,6 @@ public class PlayerGrid : MonoBehaviour {
         Debug.Log(output);
     }
     #endregion
-
 }
 
 [System.Serializable]
