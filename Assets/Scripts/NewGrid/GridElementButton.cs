@@ -13,10 +13,12 @@ public class GridElementButton : MonoBehaviour {
     public Material idleMaterial; // Ref to idle material
     public MeshRenderer rendererRef; // Ref to renderer
     public MeshRenderer selectedRendererRef; // Ref to selected box renderer
+    public string effect;
 
     private void Start() {
         //setIdle();
         selectedRendererRef.enabled = false;
+        effect = "None";
     }
 
     private void OnMouseEnter() {
@@ -70,6 +72,16 @@ public class GridElementButton : MonoBehaviour {
 
     public void resetSelected() {
         selectedRendererRef.enabled = false;
+    }
+
+    public void RollEffect() {
+        int roll = Random.Range(0, 10);
+        if (roll < 3) {
+            effect = "Bomb";
+        }
+        else {
+            effect = "None";
+        }
     }
     #endregion
 }

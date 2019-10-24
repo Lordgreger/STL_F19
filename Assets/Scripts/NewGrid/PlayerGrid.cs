@@ -14,8 +14,9 @@ public class PlayerGrid : MonoBehaviour {
     public int targetValMax;
     public int targetValMin;
     public float gridElementDistance;
+    public float gridElementSize;
     public GameObject gridElementPrefab;
-    public TextMeshPro targetText;
+    public TextMeshProUGUI targetText;
     public GridElementButton[,] elements = new GridElementButton[3,3];
     public IntEvent scored = new IntEvent();
 
@@ -37,9 +38,12 @@ public class PlayerGrid : MonoBehaviour {
     #region Unity Scheduling
     private void Start() {
         GenerateGrid();
-        SetupSelected();
-        SetTargetIdle();
-        SetGridIdle();
+        //SetupSelected();
+        //SetTargetIdle();
+        //SetGridIdle();
+
+        // Test grid
+        //StartNewGame();
     }
 
     private void Update() {
@@ -69,13 +73,13 @@ public class PlayerGrid : MonoBehaviour {
         for (int i = 0; i < elements.GetLength(0); i++) {
             for (int j = 0; j < elements.GetLength(1); j++) {
                 GameObject go = Instantiate<GameObject>(gridElementPrefab, transform);
-                go.transform.position = new Vector3((i * gridElementDistance) - halfTotalSizeX, (j * gridElementDistance) - halfTotalSizeY, 0);
+                go.transform.localPosition = new Vector3(((i * gridElementDistance) - halfTotalSizeX) * gridElementSize, ((j * gridElementDistance) - halfTotalSizeY) * gridElementSize, 0);
 
-                GridElementButton ge = go.GetComponent<GridElementButton>();
-                elements[i, j] = ge;
-                ge.gridController = this;
-                ge.pos = new GridPos(i, j);
-                ReRollGridElement(ge);
+                //GridElementButton ge = go.GetComponent<GridElementButton>();
+                //elements[i, j] = ge;
+                //ge.gridController = this;
+                //ge.pos = new GridPos(i, j);
+                //ReRollGridElement(ge);
             }
         }
     }
@@ -109,14 +113,16 @@ public class PlayerGrid : MonoBehaviour {
     #endregion
 
     #region Selected
-    public void AddToSelected(GridElementButton ge) {
+    public bool AddToSelected(GridElementButton ge) {
         if (ge.selected == false) {
             if (ValidateSelectedCandidate(ge)) {
                 selectedElements.Add(ge);
                 ge.selected = true;
                 ge.setSelected();
+                return true;
             }
         }
+        return false;
     }
 
     bool ValidateSelectedCandidate(GridElementButton candidate) {
@@ -175,6 +181,7 @@ public class PlayerGrid : MonoBehaviour {
 
     void ReRollGridElement(GridElementButton ge) {
         ge.setValAndReset(Random.Range(gridValMin, gridValMax + 1));
+        ge.RollEffect();
     }
 
     void ReRollGridElementNewGuaranteed(GridElementButton ge) {
@@ -213,9 +220,7 @@ public class PlayerGrid : MonoBehaviour {
             printSelected();
             if (selectedElements.Count > 0) {
                 if (CheckSelected()) {
-                    ReRollSelectedNewGuaranteed();
-                    NewRandomTarget();
-                    scored.Invoke(selectedElements.Count);
+                    CorrectSelected();
                 }
                 else {
 
@@ -225,6 +230,68 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
 
+    class CorrectInfo {
+        public int elementCount;
+        public int scoreModifier;
+    }
+
+    void CorrectSelected() {
+        CorrectInfo info = new CorrectInfo();
+        info.elementCount = selectedElements.Count;
+        info.scoreModifier = 1;
+
+        int i = 0;
+        while (selectedElements.Count > i) {
+            GridElementButton ge = selectedElements[i];
+            ApplyElementEffect(ge, info);
+            i++;
+        }
+        scored.Invoke(info.elementCount * info.scoreModifier);
+
+        ReRollSelectedNewGuaranteed();
+        NewRandomTarget();
+        scored.Invoke(selectedElements.Count);
+    }
+
+    #endregion
+
+    #region Element Effect
+    void ApplyElementEffect(GridElementButton ge, CorrectInfo info) {
+        switch (ge.effect) {
+            case "Bomb":
+                ApplyBombEffect(ge, info);
+                break;
+
+            case "None":
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+    void ApplyBombEffect(GridElementButton ge, CorrectInfo info) {
+        Debug.Log("Applied bomb effect");
+        int addedBlocks = 0;
+
+        if (ge.pos.x > 0) {
+            if (ge.pos.y > 0) { if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y - 1])) { addedBlocks++; } }
+            if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y])) { addedBlocks++; }
+            if (ge.pos.y < gridWidth - 1) { if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y + 1])) { addedBlocks++; } }
+        }
+
+        if (ge.pos.y > 0) { if (AddToSelected(elements[ge.pos.x, ge.pos.y - 1])) { addedBlocks++; } }
+        if (ge.pos.y < gridWidth - 1) { if (AddToSelected(elements[ge.pos.x, ge.pos.y + 1])) { addedBlocks++; } }
+
+        if (ge.pos.x < gridHeight - 1) {
+            if (ge.pos.y > 0) { if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y - 1])) { addedBlocks++; } }
+            if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y])) { addedBlocks++; }
+            if (ge.pos.y < gridWidth - 1) { if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y + 1])) { addedBlocks++; } }
+        }
+
+        info.elementCount += addedBlocks;
+    }
     #endregion
 
     #region Print

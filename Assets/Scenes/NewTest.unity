@@ -589,7 +589,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   score: 0
   countdownTime: 3
-  gameTime: 10
+  gameTime: 999
   gameTimerUpdateDelay: 0.2
   gridController: {fileID: 980363597}
   countdownRef: {fileID: 929979878}

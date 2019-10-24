@@ -29,14 +29,14 @@ public class SinglePlayerController : MonoBehaviour {
 
     #region Score
     void scoredEvent(int amount) {
-
+        Debug.Log("Scored: " + amount);
     }
 
     #endregion
 
     #region Timer
     void UpdateTimer(float time) {
-        Debug.Log("Time left: " + time);
+        //Debug.Log("Time left: " + time);
     }
     #endregion
 
