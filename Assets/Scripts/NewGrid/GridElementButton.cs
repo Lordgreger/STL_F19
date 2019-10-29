@@ -25,14 +25,14 @@ public class GridElementButton : MonoBehaviour {
         if (idle) { return; } // Catch for idle
 
         if (Input.GetMouseButton(0)) {
-            gridController.AddToSelected(this); 
+            //gridController.AddToSelected(this); 
         }
     }
 
     private void OnMouseDown() {
         if (idle) { return; } // Catch for idle
 
-        gridController.AddToSelected(this);
+        //gridController.AddToSelected(this);
     }
 
     #region Public Sets

@@ -17,12 +17,12 @@ public class PlayerGrid : MonoBehaviour {
     public float gridElementSize;
     public GameObject gridElementPrefab;
     public TextMeshProUGUI targetText;
-    public GridElementButton[,] elements = new GridElementButton[3,3];
+    public GridElementGUI[,] elements = new GridElementGUI[3,3];
     public IntEvent scored = new IntEvent();
 
     // Private
     int currentTarget;
-    List<GridElementButton> selectedElements;
+    List<GridElementGUI> selectedElements;
     
 
     // Definitions
@@ -38,12 +38,12 @@ public class PlayerGrid : MonoBehaviour {
     #region Unity Scheduling
     private void Start() {
         GenerateGrid();
-        //SetupSelected();
-        //SetTargetIdle();
+        SetupSelected();
+        SetTargetIdle();
         //SetGridIdle();
 
         // Test grid
-        //StartNewGame();
+        StartNewGame();
     }
 
     private void Update() {
@@ -65,7 +65,7 @@ public class PlayerGrid : MonoBehaviour {
 
     #region Setup
     void GenerateGrid() {
-        elements = new GridElementButton[gridWidth, gridHeight];
+        elements = new GridElementGUI[gridWidth, gridHeight];
 
         float halfTotalSizeX = halfTotalSizeX = (((float)elements.GetLength(0) * (float)gridElementDistance) / 2f) - (gridElementDistance / 2f);
         float halfTotalSizeY = halfTotalSizeY = (((float)elements.GetLength(1) * (float)gridElementDistance) / 2f) - (gridElementDistance / 2f);
@@ -75,17 +75,17 @@ public class PlayerGrid : MonoBehaviour {
                 GameObject go = Instantiate<GameObject>(gridElementPrefab, transform);
                 go.transform.localPosition = new Vector3(((i * gridElementDistance) - halfTotalSizeX) * gridElementSize, ((j * gridElementDistance) - halfTotalSizeY) * gridElementSize, 0);
 
-                //GridElementButton ge = go.GetComponent<GridElementButton>();
-                //elements[i, j] = ge;
-                //ge.gridController = this;
-                //ge.pos = new GridPos(i, j);
-                //ReRollGridElement(ge);
+                GridElementGUI ge = go.GetComponent<GridElementGUI>();
+                elements[i, j] = ge;
+                ge.gridController = this;
+                ge.pos = new GridPos(i, j);
+                ReRollGridElement(ge);
             }
         }
     }
 
     void SetupSelected() {
-        selectedElements = new List<GridElementButton>();
+        selectedElements = new List<GridElementGUI>();
     }
 
     #endregion
@@ -113,7 +113,7 @@ public class PlayerGrid : MonoBehaviour {
     #endregion
 
     #region Selected
-    public bool AddToSelected(GridElementButton ge) {
+    public bool AddToSelected(GridElementGUI ge) {
         if (ge.selected == false) {
             if (ValidateSelectedCandidate(ge)) {
                 selectedElements.Add(ge);
@@ -125,7 +125,7 @@ public class PlayerGrid : MonoBehaviour {
         return false;
     }
 
-    bool ValidateSelectedCandidate(GridElementButton candidate) {
+    bool ValidateSelectedCandidate(GridElementGUI candidate) {
         if (selectedElements.Count == 0) {
             return true;
         }
@@ -179,12 +179,12 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
 
-    void ReRollGridElement(GridElementButton ge) {
+    void ReRollGridElement(GridElementGUI ge) {
         ge.setValAndReset(Random.Range(gridValMin, gridValMax + 1));
         ge.RollEffect();
     }
 
-    void ReRollGridElementNewGuaranteed(GridElementButton ge) {
+    void ReRollGridElementNewGuaranteed(GridElementGUI ge) {
         int newVal = Random.Range(gridValMin, gridValMax + 1);
         if (ge.val == newVal) {
             ReRollGridElementNewGuaranteed(ge);
@@ -242,7 +242,7 @@ public class PlayerGrid : MonoBehaviour {
 
         int i = 0;
         while (selectedElements.Count > i) {
-            GridElementButton ge = selectedElements[i];
+            GridElementGUI ge = selectedElements[i];
             ApplyElementEffect(ge, info);
             i++;
         }
@@ -256,7 +256,7 @@ public class PlayerGrid : MonoBehaviour {
     #endregion
 
     #region Element Effect
-    void ApplyElementEffect(GridElementButton ge, CorrectInfo info) {
+    void ApplyElementEffect(GridElementGUI ge, CorrectInfo info) {
         switch (ge.effect) {
             case "Bomb":
                 ApplyBombEffect(ge, info);
@@ -271,7 +271,7 @@ public class PlayerGrid : MonoBehaviour {
 
     }
 
-    void ApplyBombEffect(GridElementButton ge, CorrectInfo info) {
+    void ApplyBombEffect(GridElementGUI ge, CorrectInfo info) {
         Debug.Log("Applied bomb effect");
         int addedBlocks = 0;
 

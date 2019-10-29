@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5153351922741639895}
   - component: {fileID: 5372110032861071343}
   - component: {fileID: 6777298136060810347}
+  - component: {fileID: 2803051692281090808}
   m_Layer: 0
   m_Name: GridElementGUI
   m_TagString: Untagged
@@ -35,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 65, y: 65}
+  m_SizeDelta: {x: 90, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5372110032861071343
 CanvasRenderer:
@@ -72,3 +73,33 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &2803051692281090808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6586094869736580415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9bbc4884840fca438304be24ea32850, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridController: {fileID: 0}
+  pos:
+    x: 0
+    y: 0
+  val: 0
+  selected: 0
+  idle: 0
+  numberSprites:
+  - {fileID: 21300000, guid: f541e3b1ba0fd4401b44ef51b6eddc15, type: 3}
+  - {fileID: 21300000, guid: 28f0623a13bf6454383a5c19d33e9471, type: 3}
+  - {fileID: 21300000, guid: 19b3c203dddb248cc829335d3d662227, type: 3}
+  - {fileID: 21300000, guid: 100d3e90723bb49fca9960eafb795e57, type: 3}
+  - {fileID: 21300000, guid: 16d12f8bdb5b745b598d2632e44af802, type: 3}
+  - {fileID: 21300000, guid: ed80bf3b0351a46a5a56f111c6df3290, type: 3}
+  - {fileID: 21300000, guid: 7fb8f59b23e054a7bbe1e97be9c6e577, type: 3}
+  idleSprite: {fileID: 21300000, guid: 4a210bde67abb8e4897b91250ccb3b6d, type: 3}
+  imageRef: {fileID: 6777298136060810347}
+  effect: 
