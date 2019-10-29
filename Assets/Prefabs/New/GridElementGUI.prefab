@@ -102,4 +102,5 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7fb8f59b23e054a7bbe1e97be9c6e577, type: 3}
   idleSprite: {fileID: 21300000, guid: 4a210bde67abb8e4897b91250ccb3b6d, type: 3}
   imageRef: {fileID: 6777298136060810347}
+  selectedDarknessVal: 0.5
   effect: 

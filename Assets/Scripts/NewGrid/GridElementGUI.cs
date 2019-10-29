@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class GridElementGUI : MonoBehaviour {
+public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler {
     public PlayerGrid gridController; // Ref to controller
     public GridPos pos; // Pos in grid
     public int val; // Current value
@@ -12,25 +13,28 @@ public class GridElementGUI : MonoBehaviour {
     public Sprite[] numberSprites; // Ref to sprites for numbers
     public Sprite idleSprite; // Ref to idle sprite
     public Image imageRef; // Ref to image
+    public float selectedDarknessVal; // Value of V in HSV color of image
     public string effect;
 
     private void Start() {
-        imageRef.sprite = idleSprite;
+        //imageRef.sprite = idleSprite;
         effect = "None";
     }
 
-    private void OnMouseEnter() {
+    public void OnPointerEnter(PointerEventData pointerEventData) {
         if (idle) { return; } // Catch for idle
+        //Debug.Log("Got enter");
 
         if (Input.GetMouseButton(0)) {
-            //gridController.AddToSelected(this);
+            gridController.AddToSelected(this);
         }
     }
 
-    private void OnMouseDown() {
+    public void OnPointerDown(PointerEventData pointerEventData) {
         if (idle) { return; } // Catch for idle
+        Debug.Log("Got down");
 
-        //gridController.AddToSelected(this);
+        gridController.AddToSelected(this);
     }
 
     #region Public Sets
@@ -65,11 +69,15 @@ public class GridElementGUI : MonoBehaviour {
 
     #region Misc
     public void setSelected() {
-        //selectedRendererRef.enabled = true;
+        //Debug.Log("Sets selected");
+        Color c = Color.HSVToRGB(0, 0, 1);
+        //Debug.Log("Color = " + c);
+        imageRef.color = Color.HSVToRGB(0, 0, selectedDarknessVal);
     }
 
     public void resetSelected() {
-        //selectedRendererRef.enabled = false;
+        //Debug.Log("Resets selected");
+        imageRef.color = Color.HSVToRGB(0, 0, 1);
     }
 
     public void RollEffect() {

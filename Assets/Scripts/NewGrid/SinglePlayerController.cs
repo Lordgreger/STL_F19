@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using TMPro; 
 
 public class SinglePlayerController : MonoBehaviour {
 
@@ -12,7 +12,7 @@ public class SinglePlayerController : MonoBehaviour {
     public float gameTimerUpdateDelay;
 
     public PlayerGrid gridController;
-    public TextMeshPro countdownRef;
+    public TextMeshProUGUI countdownRef;
 
     #endregion
 
@@ -29,6 +29,7 @@ public class SinglePlayerController : MonoBehaviour {
 
     #region Score
     void scoredEvent(int amount) {
+        score += amount;
         Debug.Log("Scored: " + amount);
     }
 
@@ -49,11 +50,13 @@ public class SinglePlayerController : MonoBehaviour {
 
     #region Coroutines
     IEnumerator CountdownStart(int seconds) {
+        countdownRef.gameObject.SetActive(true);
         for (int i = 0; i < seconds; i++) {
             countdownRef.text = (seconds - i).ToString();
             yield return new WaitForSeconds(1);
         }
         countdownRef.text = "";
+        countdownRef.gameObject.SetActive(false);
 
         gridController.StartNewGame();
         StartCoroutine(GameTimer());

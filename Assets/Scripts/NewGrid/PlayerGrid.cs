@@ -40,10 +40,10 @@ public class PlayerGrid : MonoBehaviour {
         GenerateGrid();
         SetupSelected();
         SetTargetIdle();
-        //SetGridIdle();
+        SetGridIdle();
 
         // Test grid
-        StartNewGame();
+        //StartNewGame();
     }
 
     private void Update() {
@@ -250,7 +250,6 @@ public class PlayerGrid : MonoBehaviour {
 
         ReRollSelectedNewGuaranteed();
         NewRandomTarget();
-        scored.Invoke(selectedElements.Count);
     }
 
     #endregion
@@ -272,22 +271,34 @@ public class PlayerGrid : MonoBehaviour {
     }
 
     void ApplyBombEffect(GridElementGUI ge, CorrectInfo info) {
-        Debug.Log("Applied bomb effect");
+        //Debug.Log("Applied bomb effect");
         int addedBlocks = 0;
 
         if (ge.pos.x > 0) {
             if (ge.pos.y > 0) { if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y - 1])) { addedBlocks++; } }
             if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y])) { addedBlocks++; }
-            if (ge.pos.y < gridWidth - 1) { if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y + 1])) { addedBlocks++; } }
+            if (ge.pos.y < gridHeight - 1) { if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y + 1])) { addedBlocks++; } }
         }
 
         if (ge.pos.y > 0) { if (AddToSelected(elements[ge.pos.x, ge.pos.y - 1])) { addedBlocks++; } }
-        if (ge.pos.y < gridWidth - 1) { if (AddToSelected(elements[ge.pos.x, ge.pos.y + 1])) { addedBlocks++; } }
+        if (ge.pos.y < gridHeight - 1) { if (AddToSelected(elements[ge.pos.x, ge.pos.y + 1])) { addedBlocks++; } }
 
-        if (ge.pos.x < gridHeight - 1) {
-            if (ge.pos.y > 0) { if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y - 1])) { addedBlocks++; } }
-            if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y])) { addedBlocks++; }
-            if (ge.pos.y < gridWidth - 1) { if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y + 1])) { addedBlocks++; } }
+        if (ge.pos.x < gridWidth - 1) {
+            //Debug.Log("Size: " + elements.GetLength(0) + ", " + elements.GetLength(1));
+            if (ge.pos.y > 0) {
+                //Debug.Log("x: " + (ge.pos.x + 1) + " y: " + (ge.pos.y - 1));
+                if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y - 1])) { addedBlocks++; }
+            }
+
+            //Debug.Log("x: " + (ge.pos.x + 1) + " y: " + (ge.pos.y));
+            if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y])) {
+                addedBlocks++;
+            }
+
+            if (ge.pos.y < gridHeight - 1) {
+                //Debug.Log("x: " + (ge.pos.x + 1) + " y: " + (ge.pos.y));
+                if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y + 1])) { addedBlocks++; }
+            }
         }
 
         info.elementCount += addedBlocks;
