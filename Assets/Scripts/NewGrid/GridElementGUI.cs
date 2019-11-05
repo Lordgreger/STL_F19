@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler {
     public PlayerGrid gridController; // Ref to controller
@@ -13,6 +14,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     public Sprite[] numberSprites; // Ref to sprites for numbers
     public Sprite idleSprite; // Ref to idle sprite
     public Image imageRef; // Ref to image
+    public TextMeshProUGUI valueText;
     public float selectedDarknessVal; // Value of V in HSV color of image
     public string effect;
 
@@ -43,6 +45,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         if (i > 0 && i < 8) { // Valid number
             imageRef.sprite = numberSprites[i - 1];
             val = i;
+            valueText.text = val.ToString();
         }
     }
 
@@ -58,12 +61,14 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         selected = false;
         imageRef.sprite = idleSprite;
         resetSelected();
+        valueText.enabled = false;
     }
 
     // Sets elelment to be active and updates graphics
     public void setActive() {
         idle = false;
         setVal(val);
+        valueText.enabled = true;
     }
     #endregion
 
@@ -82,7 +87,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
 
     public void RollEffect() {
         int roll = Random.Range(0, 10);
-        if (roll < 3) {
+        if (roll < 0) {
             effect = "Bomb";
         }
         else {

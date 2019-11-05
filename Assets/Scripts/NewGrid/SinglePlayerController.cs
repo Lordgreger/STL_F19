@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro; 
 
 public class SinglePlayerController : MonoBehaviour {
@@ -13,6 +14,14 @@ public class SinglePlayerController : MonoBehaviour {
 
     public PlayerGrid gridController;
     public TextMeshProUGUI countdownRef;
+    public RectTransform timerRef;
+    public float timerTotalWidth;
+
+    public TextMeshProUGUI pointsText;
+
+    public GameObject scoreScreenRef;
+    public TextMeshProUGUI endScoreText;
+
 
     #endregion
 
@@ -30,13 +39,17 @@ public class SinglePlayerController : MonoBehaviour {
     #region Score
     void scoredEvent(int amount) {
         score += amount;
-        Debug.Log("Scored: " + amount);
+        pointsText.text = score.ToString();
+        //Debug.Log("Scored: " + amount);
     }
-
     #endregion
 
     #region Timer
     void UpdateTimer(float time) {
+        //Debug.Log("gt: " + gameTime + " tl: " + time);
+        float relation = (time / gameTime);
+        //Debug.Log(relation);
+        timerRef.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, relation * timerTotalWidth);
         //Debug.Log("Time left: " + time);
     }
     #endregion
@@ -44,8 +57,19 @@ public class SinglePlayerController : MonoBehaviour {
     #region End Game
     void EndGame() {
         gridController.EndGame();
+        scoreScreenRef.SetActive(true);
+        endScoreText.text = score.ToString();
     }
 
+    #endregion
+
+    #region NewGame
+    public void StartNewGame() {
+        score = 0;
+        pointsText.text = score.ToString();
+        scoreScreenRef.SetActive(false);
+        StartCoroutine(CountdownStart(countdownTime));
+    }
     #endregion
 
     #region Coroutines
