@@ -444,7 +444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   score: 0
   countdownTime: 3
-  gameTime: 5
+  gameTime: 90
   gameTimerUpdateDelay: 0.02
   gridController: {fileID: 1773139335}
   countdownRef: {fileID: 1964850212}
@@ -1647,7 +1647,7 @@ MonoBehaviour:
   gridValMax: 7
   gridValMin: 1
   targetValMax: 11
-  targetValMin: 4
+  targetValMin: 18
   gridElementDistance: 1.05
   gridElementSize: 90
   gridElementPrefab: {fileID: 6586094869736580415, guid: 074a95744e9ff134e80b9364ca9165d5,
