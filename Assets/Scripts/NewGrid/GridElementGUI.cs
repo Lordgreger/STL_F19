@@ -86,8 +86,11 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     }
 
     public void RollEffect() {
-        int roll = Random.Range(0, 10);
-        if (roll < 0) {
+
+        int roll = Random.Range(0, 50);
+        roll += 5 * gridController.level;
+
+        if (roll > 50) {
             effect = "Bomb";
         }
         else {

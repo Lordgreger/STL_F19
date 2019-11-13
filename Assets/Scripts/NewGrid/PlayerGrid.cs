@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class PlayerGrid : MonoBehaviour {
     #region Variables
@@ -18,7 +19,15 @@ public class PlayerGrid : MonoBehaviour {
     public GameObject gridElementPrefab;
     public TextMeshProUGUI targetText;
     public GridElementGUI[,] elements = new GridElementGUI[3,3];
+    public Image levelCounterRef;
+    public Sprite[] levelCounterImages = new Sprite[6];
+
+    public int level;
+    int levelUpCount;
+
+    // Events
     public IntEvent scored = new IntEvent();
+    public IntEvent levelUpEvent = new IntEvent();
 
     // Private
     int currentTarget;
@@ -53,6 +62,8 @@ public class PlayerGrid : MonoBehaviour {
 
     #region Control
     public void StartNewGame() {
+        level = 1;
+        levelUpCount = 0;
         SetupNewStartGrid();
         NewRandomTarget();
     }
@@ -214,6 +225,26 @@ public class PlayerGrid : MonoBehaviour {
     }
     #endregion
 
+    #region level
+    void addToLevel(int i) {
+        levelUpCount += i;
+        if (levelUpCount >= 6) {
+            levelUp();
+            levelUpCount = 0;
+            level += 1;
+        }
+        updateLevelCounter();
+    }
+
+    void updateLevelCounter() {
+        levelCounterRef.sprite = levelCounterImages[levelUpCount];
+    }
+
+    void levelUp() {
+        levelUpEvent.Invoke(level);
+    }
+    #endregion
+
     #region Input
     void HandleMouseRelease() {
         if (Input.GetMouseButtonUp(0)) {
@@ -247,6 +278,7 @@ public class PlayerGrid : MonoBehaviour {
             i++;
         }
         scored.Invoke(info.elementCount * info.scoreModifier);
+        addToLevel(1);
 
         ReRollSelectedNewGuaranteed();
         NewRandomTarget();

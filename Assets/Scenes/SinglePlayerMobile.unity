@@ -446,6 +446,7 @@ MonoBehaviour:
   countdownTime: 3
   gameTime: 90
   gameTimerUpdateDelay: 0.02
+  levelUpTime: 30
   gridController: {fileID: 1773139335}
   countdownRef: {fileID: 1964850212}
   timerRef: {fileID: 1886996074}
@@ -1653,7 +1654,19 @@ MonoBehaviour:
   gridElementPrefab: {fileID: 6586094869736580415, guid: 074a95744e9ff134e80b9364ca9165d5,
     type: 3}
   targetText: {fileID: 1233133055}
+  levelCounterRef: {fileID: 1209240155}
+  levelCounterImages:
+  - {fileID: 21300000, guid: c9566eb713f2f564e8f294d7e8238eef, type: 3}
+  - {fileID: 21300000, guid: fd9be3696a59f084fa3c44481d699e4c, type: 3}
+  - {fileID: 21300000, guid: c9c6beb77ad10f440a483e98df19d974, type: 3}
+  - {fileID: 21300000, guid: 4b53526f2f012484b8eea250447113c2, type: 3}
+  - {fileID: 21300000, guid: 0e6dd6d4a653c9d4790738a7f2af60c4, type: 3}
+  - {fileID: 21300000, guid: 89d66fdf6f55b6048892b60d0d8ce280, type: 3}
+  level: 0
   scored:
+    m_PersistentCalls:
+      m_Calls: []
+  levelUpEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &1776304917

@@ -11,6 +11,7 @@ public class SinglePlayerController : MonoBehaviour {
     public int countdownTime;
     public float gameTime;
     public float gameTimerUpdateDelay;
+    public float levelUpTime;
 
     public PlayerGrid gridController;
     public TextMeshProUGUI countdownRef;
@@ -22,12 +23,13 @@ public class SinglePlayerController : MonoBehaviour {
     public GameObject scoreScreenRef;
     public TextMeshProUGUI endScoreText;
 
-
+    float currentTime;
     #endregion
 
     #region Unity Scheduling
     private void Start() {
         gridController.scored.AddListener(scoredEvent);
+        gridController.levelUpEvent.AddListener(onLevelUp);
         StartCoroutine(CountdownStart(countdownTime));
     }
 
@@ -41,6 +43,15 @@ public class SinglePlayerController : MonoBehaviour {
         score += amount;
         pointsText.text = score.ToString();
         //Debug.Log("Scored: " + amount);
+    }
+    #endregion
+
+    #region level
+    void onLevelUp(int i) {
+        currentTime += levelUpTime;
+        if (currentTime > gameTime) {
+            currentTime = gameTime;
+        }
     }
     #endregion
 
@@ -88,14 +99,13 @@ public class SinglePlayerController : MonoBehaviour {
 
     IEnumerator GameTimer() {
         // Setup countdown
-        float iterations = gameTime / gameTimerUpdateDelay;
-        float time = gameTime;
+        currentTime = gameTime;
 
         // Countdown
-        for (int i = 0; i < iterations; i++) {
+        while (currentTime > 0f) {
             yield return new WaitForSeconds(gameTimerUpdateDelay);
-            time -= gameTimerUpdateDelay;
-            UpdateTimer(time);
+            currentTime -= gameTimerUpdateDelay;
+            UpdateTimer(currentTime);
         }
 
         // End Game
