@@ -21,10 +21,12 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     private void Start() {
         //imageRef.sprite = idleSprite;
         effect = "None";
+        gridController.scoredListEvent.AddListener(OnScoredList);
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData) {
         if (idle) { return; } // Catch for idle
+        if (effect == "Stone") { return; } // Catch for stone
         //Debug.Log("Got enter");
 
         if (Input.GetMouseButton(0)) {
@@ -34,15 +36,64 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
 
     public void OnPointerDown(PointerEventData pointerEventData) {
         if (idle) { return; } // Catch for idle
-        Debug.Log("Got down");
+        if (effect == "Stone") { return; } // Catch for stone
 
         gridController.AddToSelected(this);
+    }
+
+    void OnScoredList(List<GridElementGUI> elements) {
+        //Debug.Log("Got Scored list");
+        checkStoneEffect(elements);
+    }
+
+    void checkStoneEffect(List<GridElementGUI> elements) {
+        if (effect != "Stone")
+            return;
+
+        foreach (var element in elements) {
+            if (isNextTo4(pos, element.pos)) {
+                breakStoneEffect();
+            }
+        }
+    }
+
+    void breakStoneEffect() {
+        effect = "None";
+    }
+
+    bool isNextTo8(GridPos x, GridPos y) {
+        int calcX = y.x - x.x;
+        int calcY = y.y - x.y;
+        if (calcX > -2 && calcX < 2) {
+            if (calcY > -2 && calcY < 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool isNextTo4(GridPos x, GridPos y) {
+        if (x.x == y.x) {
+            int calc = x.y - y.y;
+            if (calc == 1 || calc == -1) {
+                return true;
+            }
+        }
+
+        if (x.y == y.y) {
+            int calc = x.x - y.x;
+            if (calc == 1 || calc == -1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     #region Public Sets
     // Sets new val and updates graphics
     public void setVal(int i) {
-        if (i > 0 && i < 8) { // Valid number
+        if (i > 0 && i < numberSprites.GetLength(0) + 1) { // Valid number
             imageRef.sprite = numberSprites[i - 1];
             val = i;
             valueText.text = val.ToString();
@@ -85,17 +136,31 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         imageRef.color = Color.HSVToRGB(0, 0, 1);
     }
 
+    #endregion
+
+    #region Effects
     public void RollEffect() {
 
-        int roll = Random.Range(0, 50);
+        effect = "None";
+
+        // Roll Stone
+        int roll = Random.Range(0, 40);
+        roll += 5 * gridController.level;
+
+        if (roll > 40) {
+            effect = "Stone";
+            return;
+        }
+
+        // Roll Bomb
+        roll = Random.Range(0, 40);
         roll += 5 * gridController.level;
 
         if (roll > 50) {
             effect = "Bomb";
+            return;
         }
-        else {
-            effect = "None";
-        }
+
     }
     #endregion
 }

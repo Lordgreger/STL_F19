@@ -28,12 +28,12 @@ public class PlayerGrid : MonoBehaviour {
     // Events
     public IntEvent scored = new IntEvent();
     public IntEvent levelUpEvent = new IntEvent();
+    public ScoredListEvent scoredListEvent = new ScoredListEvent();
 
     // Private
     int currentTarget;
     List<GridElementGUI> selectedElements;
     
-
     // Definitions
     struct Element {
         public int value;
@@ -41,6 +41,7 @@ public class PlayerGrid : MonoBehaviour {
 
     [System.Serializable]
     public class IntEvent : UnityEvent<int> {}
+    public class ScoredListEvent : UnityEvent<List<GridElementGUI>> {}
 
     #endregion
 
@@ -278,6 +279,7 @@ public class PlayerGrid : MonoBehaviour {
             i++;
         }
         scored.Invoke(info.elementCount * info.scoreModifier);
+        scoredListEvent.Invoke(selectedElements);
         addToLevel(1);
 
         ReRollSelectedNewGuaranteed();
