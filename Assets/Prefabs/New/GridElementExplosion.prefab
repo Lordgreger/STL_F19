@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 3406843805784152431}
   - component: {fileID: 3406843805784152429}
   - component: {fileID: 3406843805784152428}
-  - component: {fileID: 2653654826427971373}
   - component: {fileID: 1471860467076727060}
+  - component: {fileID: 9108071176024752803}
   m_Layer: 5
   m_Name: GridElementExplosion
   m_TagString: Untagged
@@ -29,7 +29,7 @@ RectTransform:
   m_GameObject: {fileID: 3406843805784152430}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5254236, y: 1.5254236, z: 1.5254236}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -74,22 +74,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!111 &2653654826427971373
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3406843805784152430}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 7410ffc0e1da2884580ded473cc7daaf, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: 7410ffc0e1da2884580ded473cc7daaf, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!95 &1471860467076727060
 Animator:
   serializedVersion: 3
@@ -109,3 +93,17 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &9108071176024752803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3406843805784152430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8346203c0412e4187c7ad8216a9e99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1471860467076727060}
+  explosionTime: 1.65
