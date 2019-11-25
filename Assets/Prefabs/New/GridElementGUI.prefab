@@ -336,3 +336,5 @@ MonoBehaviour:
   valueText: {fileID: 3238364622230219185}
   selectedDarknessVal: 0.5
   effect: 
+  explosionPrefab: {fileID: 3406843805784152430, guid: 9d3a7bbe219de4840b681716eff8db44,
+    type: 3}

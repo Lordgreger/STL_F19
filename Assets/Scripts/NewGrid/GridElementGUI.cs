@@ -17,6 +17,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     public TextMeshProUGUI valueText;
     public float selectedDarknessVal; // Value of V in HSV color of image
     public string effect;
+    public GameObject explosionPrefab;
 
     private void Start() {
         //imageRef.sprite = idleSprite;
@@ -90,6 +91,8 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         return false;
     }
 
+    
+
     #region Public Sets
     // Sets new val and updates graphics
     public void setVal(int i) {
@@ -102,6 +105,12 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
 
     // Sets new val and resets selected params
     public void setValAndReset(int i) {
+        setVal(i);
+        resetSelected();
+    }
+
+    // Sets new val and explode effect
+    public void setValResetExplode(int i) {
         setVal(i);
         resetSelected();
     }
@@ -136,6 +145,12 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         imageRef.color = Color.HSVToRGB(0, 0, 1);
     }
 
+    public void explode() {
+        //Debug.Log("Explode");
+        float delay = Random.Range(0f, 0.25f);
+        Instantiate(explosionPrefab, this.transform).GetComponent<GridElementExplosion>().StartExplosion(delay);
+    }
+
     #endregion
 
     #region Effects
@@ -147,7 +162,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         int roll = Random.Range(0, 40);
         roll += 5 * gridController.level;
 
-        if (roll > 40) {
+        if (roll > 50) {
             effect = "Stone";
             return;
         }

@@ -282,8 +282,16 @@ public class PlayerGrid : MonoBehaviour {
         scoredListEvent.Invoke(selectedElements);
         addToLevel(1);
 
-        ReRollSelectedNewGuaranteed();
+        
+        ExplodeReroll();
         NewRandomTarget();
+    }
+
+    void ExplodeReroll() {
+        foreach (var ge in selectedElements) {
+            ge.explode();
+            ReRollGridElementNewGuaranteed(ge);
+        }
     }
 
     #endregion
