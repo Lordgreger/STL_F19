@@ -336,5 +336,13 @@ MonoBehaviour:
   valueText: {fileID: 3238364622230219185}
   selectedDarknessVal: 0.5
   effect: 
-  explosionPrefab: {fileID: 3406843805784152430, guid: 9d3a7bbe219de4840b681716eff8db44,
-    type: 3}
+  explosionPrefabs:
+  - {fileID: 3406843805784152430, guid: 9d3a7bbe219de4840b681716eff8db44, type: 3}
+  - {fileID: 3406843805784152430, guid: b998ac75ca5ebe94f950b93aaf2ef05b, type: 3}
+  - {fileID: 3406843805784152430, guid: ceffc453dbafbe44f9a8c74759593cc4, type: 3}
+  - {fileID: 3406843805784152430, guid: f207d9a804814cf4bb25feaedb9e3ed3, type: 3}
+  - {fileID: 3406843805784152430, guid: f9a05575a07c23347816fe6ca2126fe2, type: 3}
+  - {fileID: 3406843805784152430, guid: ac1da05f73a87de44ac6c52616e64f3c, type: 3}
+  - {fileID: 3406843805784152430, guid: 6bc3660f629f1b542a9fea08bee7df1e, type: 3}
+  - {fileID: 3406843805784152430, guid: 197c27463edcd6a4db32d02c50a4bc2e, type: 3}
+  - {fileID: 3406843805784152430, guid: 76def5a9f6c12064d99faa8da63c7eaa, type: 3}

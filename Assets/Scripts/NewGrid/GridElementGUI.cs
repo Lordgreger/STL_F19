@@ -17,7 +17,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     public TextMeshProUGUI valueText;
     public float selectedDarknessVal; // Value of V in HSV color of image
     public string effect;
-    public GameObject explosionPrefab;
+    public GameObject[] explosionPrefabs;
 
     private void Start() {
         //imageRef.sprite = idleSprite;
@@ -91,7 +91,6 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         return false;
     }
 
-    
 
     #region Public Sets
     // Sets new val and updates graphics
@@ -148,7 +147,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     public void explode() {
         //Debug.Log("Explode");
         float delay = Random.Range(0f, 0.25f);
-        Instantiate(explosionPrefab, this.transform).GetComponent<GridElementExplosion>().StartExplosion(delay);
+        Instantiate(explosionPrefabs[val - 1], this.transform).GetComponent<GridElementExplosion>().StartExplosion(delay);
     }
 
     #endregion
