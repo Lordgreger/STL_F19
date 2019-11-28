@@ -203,6 +203,7 @@ public class PlayerGrid : MonoBehaviour {
         }
         else {
             ge.setValAndReset(newVal);
+            ge.RollEffect();
         }
     }
 

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3406843805784152428}
   - component: {fileID: 1471860467076727060}
   - component: {fileID: 9108071176024752803}
+  - component: {fileID: 223072594996617998}
   m_Layer: 5
   m_Name: GridElementExplosionBlue
   m_TagString: Untagged
@@ -107,9 +108,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1471860467076727060}
-  imageRef: {fileID: 3406843805784152428}
   explosionTime: 0.75
-  green: {fileID: 21300000, guid: 5d11793800df644679c07482e3195ab0, type: 3}
+--- !u!223 &223072594996617998
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3406843805784152430}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_SortingLayerID: 0
+  m_SortingOrder: 10
+  m_TargetDisplay: 0
 --- !u!1 &7623991076584408283
 GameObject:
   m_ObjectHideFlags: 0

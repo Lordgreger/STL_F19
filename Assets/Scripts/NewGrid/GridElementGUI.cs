@@ -18,11 +18,16 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     public float selectedDarknessVal; // Value of V in HSV color of image
     public string effect;
     public GameObject[] explosionPrefabs;
+    public GameObject bombImageRef;
 
     private void Start() {
         //imageRef.sprite = idleSprite;
         effect = "None";
         gridController.scoredListEvent.AddListener(OnScoredList);
+    }
+
+    private void Update() {
+        setEffectGraphics();
     }
 
     public void OnPointerEnter(PointerEventData pointerEventData) {
@@ -137,17 +142,32 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         Color c = Color.HSVToRGB(0, 0, 1);
         //Debug.Log("Color = " + c);
         imageRef.color = Color.HSVToRGB(0, 0, selectedDarknessVal);
+        setEffectGraphics();
     }
 
     public void resetSelected() {
         //Debug.Log("Resets selected");
         imageRef.color = Color.HSVToRGB(0, 0, 1);
+        setEffectGraphics();
     }
 
     public void explode() {
         //Debug.Log("Explode");
-        float delay = Random.Range(0f, 0.25f);
+        float delay = Random.Range(0f, 0.15f);
         Instantiate(explosionPrefabs[val - 1], this.transform).GetComponent<GridElementExplosion>().StartExplosion(delay);
+    }
+
+    void setEffectGraphics() {
+        //Debug.Log("Setting graphics...");
+        bombImageRef.SetActive(false);
+
+        if (idle == true)
+            return;
+
+        if (effect == "Bomb") {
+            //Debug.Log("Was BOMB!");
+            bombImageRef.SetActive(true);
+        }
     }
 
     #endregion
@@ -163,6 +183,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
 
         if (roll > 50) {
             effect = "Stone";
+            setEffectGraphics();
             return;
         }
 
@@ -170,11 +191,11 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         roll = Random.Range(0, 40);
         roll += 5 * gridController.level;
 
-        if (roll > 50) {
+        if (roll > 40) {
             effect = "Bomb";
+            setEffectGraphics();
             return;
         }
-
     }
     #endregion
 }
