@@ -18,6 +18,7 @@ public class PlayerGrid : MonoBehaviour {
     public float gridElementSize;
     public GameObject gridElementPrefab;
     public TextMeshProUGUI targetText;
+    public Animator targetAnimator;
     public GridElementGUI[,] elements = new GridElementGUI[3,3];
     public Image levelCounterRef;
     public Sprite[] levelCounterImages = new Sprite[6];
@@ -72,6 +73,7 @@ public class PlayerGrid : MonoBehaviour {
     public void EndGame() {
         SetGridIdle();
         SetTargetIdle();
+        levelCounterRef.sprite = levelCounterImages[0];
     }
     #endregion
 
@@ -219,7 +221,8 @@ public class PlayerGrid : MonoBehaviour {
             currentTarget = newTarget;
             targetText.text = currentTarget.ToString();
         }
-        
+
+        targetAnimator.SetTrigger("Pop");
     }
 
     void SetTargetIdle() {
@@ -256,7 +259,7 @@ public class PlayerGrid : MonoBehaviour {
                     CorrectSelected();
                 }
                 else {
-
+                    IncorrectSelected();
                 }
             }
             ResetSelected();
@@ -286,6 +289,12 @@ public class PlayerGrid : MonoBehaviour {
         
         ExplodeReroll();
         NewRandomTarget();
+    }
+
+    void IncorrectSelected() {
+        foreach (var element in selectedElements) {
+            element.shake();
+        }
     }
 
     void ExplodeReroll() {

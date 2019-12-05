@@ -17,6 +17,7 @@ public class SinglePlayerController : MonoBehaviour {
     public TextMeshProUGUI countdownRef;
     public RectTransform timerRef;
     public float timerTotalWidth;
+    public Animator timerAnimator;
 
     public TextMeshProUGUI pointsText;
 
@@ -62,6 +63,13 @@ public class SinglePlayerController : MonoBehaviour {
         //Debug.Log(relation);
         timerRef.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, relation * timerTotalWidth);
         //Debug.Log("Time left: " + time);
+
+        if (relation < 0.5) {
+            timerAnimator.SetBool("Blink", true);
+        }
+        else {
+            timerAnimator.SetBool("Blink", false);
+        }
     }
     #endregion
 
@@ -70,12 +78,14 @@ public class SinglePlayerController : MonoBehaviour {
         gridController.EndGame();
         scoreScreenRef.SetActive(true);
         endScoreText.text = score.ToString();
+        timerAnimator.SetBool("Blink", false);
     }
 
     #endregion
 
     #region NewGame
     public void StartNewGame() {
+        Debug.Log("Started new game");
         score = 0;
         pointsText.text = score.ToString();
         scoreScreenRef.SetActive(false);
@@ -113,4 +123,8 @@ public class SinglePlayerController : MonoBehaviour {
     }
 
     #endregion
+
+    public void DebugMsg() {
+        Debug.Log("Got Pressed!");
+    }
 }

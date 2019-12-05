@@ -41,3 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: ScoreScreen
+    uniqueID: 3791022525
+    locked: 0

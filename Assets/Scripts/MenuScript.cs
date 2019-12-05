@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MenuScript : MonoBehaviour
 {
@@ -10,8 +11,7 @@ public class MenuScript : MonoBehaviour
     public Button size56Button;
     public Image Brickle;
     public Image ChooseSize;
-    public Image size45Image;
-    public Image size56Image;
+
 
     public Animator BrickleAnim;
     public Animator ChoosesizeAnim;
@@ -52,10 +52,18 @@ public class MenuScript : MonoBehaviour
 
     void size45click() {
         Debug.Log("Clikked da 45");
+        StartCoroutine(DelayedLoad(1f, "SinglePlayerMobile"));
     }
 
     void size56click() {
         Debug.Log("clickety clik on 56");
+        StartCoroutine(DelayedLoad(1f, "SinglePlayerMobile"));
+    }
+
+
+    IEnumerator DelayedLoad(float delay, string scene) {
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene(scene);
     }
 
 

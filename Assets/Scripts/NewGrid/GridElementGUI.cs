@@ -18,7 +18,10 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     public float selectedDarknessVal; // Value of V in HSV color of image
     public string effect;
     public GameObject[] explosionPrefabs;
+    public GameObject stoneExplosion;
     public GameObject bombImageRef;
+    public GameObject stoneImageRef;
+    public Animator animator;
 
     private void Start() {
         //imageRef.sprite = idleSprite;
@@ -65,6 +68,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
 
     void breakStoneEffect() {
         effect = "None";
+        Instantiate(stoneExplosion, this.transform).GetComponent<GridElementExplosion>().StartExplosion(0);
     }
 
     bool isNextTo8(GridPos x, GridPos y) {
@@ -128,11 +132,16 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         valueText.enabled = false;
     }
 
-    // Sets elelment to be active and updates graphics
+    // Sets element to be active and updates graphics
     public void setActive() {
         idle = false;
         setVal(val);
         valueText.enabled = true;
+    }
+
+    // Plays shake animation
+    public void shake() {
+        animator.SetTrigger("Shake");
     }
     #endregion
 
@@ -160,6 +169,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     void setEffectGraphics() {
         //Debug.Log("Setting graphics...");
         bombImageRef.SetActive(false);
+        stoneImageRef.SetActive(false);
 
         if (idle == true)
             return;
@@ -167,6 +177,10 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         if (effect == "Bomb") {
             //Debug.Log("Was BOMB!");
             bombImageRef.SetActive(true);
+        }
+
+        if (effect == "Stone") {
+            stoneImageRef.SetActive(true);
         }
     }
 
@@ -178,20 +192,20 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         effect = "None";
 
         // Roll Stone
-        int roll = Random.Range(0, 40);
+        int roll = Random.Range(0, 100);
         roll += 5 * gridController.level;
 
-        if (roll > 50) {
+        if (roll > 100) {
             effect = "Stone";
             setEffectGraphics();
             return;
         }
 
         // Roll Bomb
-        roll = Random.Range(0, 40);
+        roll = Random.Range(0, 100);
         roll += 5 * gridController.level;
 
-        if (roll > 40) {
+        if (roll > 100) {
             effect = "Bomb";
             setEffectGraphics();
             return;
