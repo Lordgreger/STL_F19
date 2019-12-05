@@ -67,7 +67,12 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     }
 
     void breakStoneEffect() {
-        effect = "None";
+        Debug.Log("Effect: " + effect);
+        if (effect != "Stone") {
+            return;
+        }
+
+        effect = "None"; 
         Instantiate(stoneExplosion, this.transform).GetComponent<GridElementExplosion>().StartExplosion(0);
     }
 
@@ -197,6 +202,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
 
         if (roll > 100) {
             effect = "Stone";
+            Debug.Log("Got stone effect");
             setEffectGraphics();
             return;
         }

@@ -443,8 +443,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: 0
-  countdownTime: 1
-  gameTime: 30
+  countdownTime: 3
+  gameTime: 60
   gameTimerUpdateDelay: 0.02
   levelUpTime: 15
   gridController: {fileID: 1773139335}
