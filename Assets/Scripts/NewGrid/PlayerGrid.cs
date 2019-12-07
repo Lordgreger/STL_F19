@@ -101,7 +101,6 @@ public class PlayerGrid : MonoBehaviour {
     void SetupSelected() {
         selectedElements = new List<GridElementGUI>();
     }
-
     #endregion
 
     #region Grid

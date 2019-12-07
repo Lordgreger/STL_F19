@@ -7,6 +7,7 @@ using TMPro;
 
 public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler {
     public PlayerGrid gridController; // Ref to controller
+    public SinglePlayerTutorialController sptcRef; // Ref to controller
     public GridPos pos; // Pos in grid
     public int val; // Current value
     public bool selected; // Is selected
@@ -26,7 +27,9 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     private void Start() {
         //imageRef.sprite = idleSprite;
         effect = "None";
-        gridController.scoredListEvent.AddListener(OnScoredList);
+
+        if (gridController != null)
+            gridController.scoredListEvent.AddListener(OnScoredList);
     }
 
     private void Update() {
@@ -39,7 +42,10 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         //Debug.Log("Got enter");
 
         if (Input.GetMouseButton(0)) {
-            gridController.AddToSelected(this);
+            if (gridController != null)
+                gridController.AddToSelected(this);
+            if (sptcRef != null)
+                sptcRef.AddToSelected(this);
         }
     }
 
@@ -47,7 +53,10 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         if (idle) { return; } // Catch for idle
         if (effect == "Stone") { return; } // Catch for stone
 
-        gridController.AddToSelected(this);
+        if (gridController != null)
+            gridController.AddToSelected(this);
+        if (sptcRef != null)
+            sptcRef.AddToSelected(this);
     }
 
     void OnScoredList(List<GridElementGUI> elements) {
