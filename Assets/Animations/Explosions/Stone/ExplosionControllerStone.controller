@@ -109,7 +109,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ExplosionBlue
+  m_Name: Explosion
   m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
@@ -123,7 +123,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 7410ffc0e1da2884580ded473cc7daaf, type: 2}
+  m_Motion: {fileID: 7400000, guid: e2c65fb44aec32c40b1142bb0a4a584d, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

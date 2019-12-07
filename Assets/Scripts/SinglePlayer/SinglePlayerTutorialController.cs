@@ -144,10 +144,10 @@ public class SinglePlayerTutorialController : MonoBehaviour {
             printSelected();
             if (selectedElements.Count > 0) {
                 if (CheckSelected()) {
-                    
+                    explodeReroll();
                 }
                 else {
-                    
+                    shakeSelected();
                 }
             }
             ResetSelected();
@@ -159,11 +159,91 @@ public class SinglePlayerTutorialController : MonoBehaviour {
     void setTarget(int val) {
         currentTarget = val;
         targetText.text = val.ToString();
-        targetAnimator.SetTrigger("Pop");
+        //targetAnimator.SetTrigger("Pop");
     }
 
     void ReRollGridElementNoEffect(GridElementGUI ge) {
         ge.setValAndReset(Random.Range(gridValMin, gridValMax + 1));
+    }
+
+    public void shakeSelected() {
+        foreach (var element in selectedElements) {
+            element.shake();
+        }
+    }
+
+    public void explodeReroll() {
+        foreach (var ge in selectedElements) {
+            ge.explode();
+            ReRollGridElementNoEffect(ge);
+        }
+    }
+
+    class CorrectInfo {
+        public int elementCount;
+        public int scoreModifier;
+    }
+
+    public void bombEffectCheck() {
+        CorrectInfo info = new CorrectInfo();
+        info.elementCount = selectedElements.Count;
+        info.scoreModifier = 1;
+
+        int i = 0;
+        while (selectedElements.Count > i) {
+            GridElementGUI ge = selectedElements[i];
+            ApplyElementEffect(ge, info);
+            i++;
+        }
+    }
+
+    void ApplyElementEffect(GridElementGUI ge, CorrectInfo info) {
+        switch (ge.effect) {
+            case "Bomb":
+                ApplyBombEffect(ge, info);
+                break;
+
+            case "None":
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+    void ApplyBombEffect(GridElementGUI ge, CorrectInfo info) {
+        //Debug.Log("Applied bomb effect");
+        int addedBlocks = 0;
+
+        if (ge.pos.x > 0) {
+            if (ge.pos.y > 0) { if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y - 1])) { addedBlocks++; } }
+            if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y])) { addedBlocks++; }
+            if (ge.pos.y < gridHeight - 1) { if (AddToSelected(elements[ge.pos.x - 1, ge.pos.y + 1])) { addedBlocks++; } }
+        }
+
+        if (ge.pos.y > 0) { if (AddToSelected(elements[ge.pos.x, ge.pos.y - 1])) { addedBlocks++; } }
+        if (ge.pos.y < gridHeight - 1) { if (AddToSelected(elements[ge.pos.x, ge.pos.y + 1])) { addedBlocks++; } }
+
+        if (ge.pos.x < gridWidth - 1) {
+            //Debug.Log("Size: " + elements.GetLength(0) + ", " + elements.GetLength(1));
+            if (ge.pos.y > 0) {
+                //Debug.Log("x: " + (ge.pos.x + 1) + " y: " + (ge.pos.y - 1));
+                if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y - 1])) { addedBlocks++; }
+            }
+
+            //Debug.Log("x: " + (ge.pos.x + 1) + " y: " + (ge.pos.y));
+            if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y])) {
+                addedBlocks++;
+            }
+
+            if (ge.pos.y < gridHeight - 1) {
+                //Debug.Log("x: " + (ge.pos.x + 1) + " y: " + (ge.pos.y));
+                if (AddToSelected(elements[ge.pos.x + 1, ge.pos.y + 1])) { addedBlocks++; }
+            }
+        }
+
+        info.elementCount += addedBlocks;
     }
     #endregion
 
@@ -198,10 +278,11 @@ public class SinglePlayerTutorialController : MonoBehaviour {
                 sptc.printSelected();
                 if (sptc.selectedElements.Count > 0) {
                     if (sptc.CheckSelected()) {
+                        sptc.explodeReroll();
                         Exit();
                     }
                     else {
-
+                        sptc.shakeSelected();
                     }
                 }
                 sptc.ResetSelected();
@@ -235,10 +316,11 @@ public class SinglePlayerTutorialController : MonoBehaviour {
                 sptc.printSelected();
                 if (sptc.selectedElements.Count > 0) {
                     if (sptc.CheckSelected()) {
+                        sptc.explodeReroll();
                         Exit();
                     }
                     else {
-
+                        sptc.shakeSelected();
                     }
                 }
                 sptc.ResetSelected();
@@ -276,6 +358,7 @@ public class SinglePlayerTutorialController : MonoBehaviour {
                 sptc.printSelected();
                 if (sptc.selectedElements.Count > 0) {
                     if (sptc.CheckSelected()) {
+                        sptc.explodeReroll();
                         sptc.elements[0, 2].checkStoneEffect(sptc.selectedElements);
                         sptc.elements[0, 2].checkStoneEffect(sptc.selectedElements);
                         sptc.elements[0, 3].checkStoneEffect(sptc.selectedElements);
@@ -290,7 +373,7 @@ public class SinglePlayerTutorialController : MonoBehaviour {
                         Exit();
                     }
                     else {
-
+                        sptc.shakeSelected();
                     }
                 }
                 sptc.ResetSelected();
@@ -336,6 +419,8 @@ public class SinglePlayerTutorialController : MonoBehaviour {
                 sptc.printSelected();
                 if (sptc.selectedElements.Count > 0) {
                     if (sptc.CheckSelected()) {
+                        sptc.bombEffectCheck();
+                        sptc.explodeReroll();
                         sptc.elements[0, 2].checkStoneEffect(sptc.selectedElements);
                         sptc.elements[0, 4].checkStoneEffect(sptc.selectedElements);
                         sptc.elements[3, 2].checkStoneEffect(sptc.selectedElements);
@@ -344,7 +429,7 @@ public class SinglePlayerTutorialController : MonoBehaviour {
                         Exit();
                     }
                     else {
-
+                        sptc.shakeSelected();
                     }
                 }
                 sptc.ResetSelected();
@@ -376,8 +461,8 @@ public class SinglePlayerTutorialController : MonoBehaviour {
         }
 
         public override void Exit() {
-            
-sptc.currentState = new TutorialState5FreeSelect(sptc);
+            sptc.elements[1, 3].setEffect("None");
+            sptc.currentState = new TutorialState5FreeSelect(sptc);
             sptc.currentState.Enter();
         }
     }
@@ -390,10 +475,12 @@ sptc.currentState = new TutorialState5FreeSelect(sptc);
                 sptc.printSelected();
                 if (sptc.selectedElements.Count > 0) {
                     if (sptc.CheckSelected()) {
+                        sptc.bombEffectCheck();
+                        sptc.explodeReroll();
                         Exit();
                     }
                     else {
-
+                        sptc.shakeSelected();
                     }
                 }
                 sptc.ResetSelected();
@@ -427,10 +514,11 @@ sptc.currentState = new TutorialState5FreeSelect(sptc);
                 sptc.printSelected();
                 if (sptc.selectedElements.Count > 0) {
                     if (sptc.CheckSelected()) {
+                        sptc.explodeReroll();
                         Exit();
                     }
                     else {
-
+                        sptc.shakeSelected();
                     }
                 }
                 sptc.ResetSelected();
@@ -464,10 +552,11 @@ sptc.currentState = new TutorialState5FreeSelect(sptc);
                 sptc.printSelected();
                 if (sptc.selectedElements.Count > 0) {
                     if (sptc.CheckSelected()) {
+                        sptc.explodeReroll();
                         Exit();
                     }
                     else {
-
+                        sptc.shakeSelected();
                     }
                 }
                 sptc.ResetSelected();
@@ -494,7 +583,6 @@ sptc.currentState = new TutorialState5FreeSelect(sptc);
         }
     }
 
-
     public class TutorialState8EndScreen : TutorialState {
         public TutorialState8EndScreen(SinglePlayerTutorialController sptc) : base(sptc) { }
 
@@ -503,10 +591,11 @@ sptc.currentState = new TutorialState5FreeSelect(sptc);
                 sptc.printSelected();
                 if (sptc.selectedElements.Count > 0) {
                     if (sptc.CheckSelected()) {
+                        sptc.explodeReroll();
                         Exit();
                     }
                     else {
-
+                        sptc.shakeSelected();
                     }
                 }
                 sptc.ResetSelected();
