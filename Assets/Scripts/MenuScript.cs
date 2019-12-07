@@ -11,6 +11,7 @@ public class MenuScript : MonoBehaviour
     public Button size56Button;
     public Image Brickle;
     public Image ChooseSize;
+    public Toggle TutorialCheck;
 
 
     public Animator BrickleAnim;
@@ -18,6 +19,7 @@ public class MenuScript : MonoBehaviour
     public Animator Size45;
     public Animator Size56;
     public Animator PlayButtonImageAnim;
+    public Animator ToggleAmin;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +30,7 @@ public class MenuScript : MonoBehaviour
         size45Button.gameObject.SetActive(false);
         size56Button.gameObject.SetActive(false);
         ChooseSize.gameObject.SetActive(false);
+        TutorialCheck.gameObject.SetActive(false);
 
 
     }
@@ -45,19 +48,32 @@ public class MenuScript : MonoBehaviour
         size45Button.gameObject.SetActive(true);
         size56Button.gameObject.SetActive(true);
         ChooseSize.gameObject.SetActive(true);
+        TutorialCheck.gameObject.SetActive(true);
         playButton.gameObject.SetActive(false);
         ChoosesizeAnim.Play("ChooseSizeAnimation");
+        ToggleAmin.Play("ToggleAnimation");
         
     }
 
     void size45click() {
-        Debug.Log("Clikked da 45");
-        StartCoroutine(DelayedLoad(1f, "SinglePlayerMobile"));
+        if (TutorialCheck.isOn == true) {
+            StartCoroutine(DelayedLoad(1f, "MobileTutorial"));
+        }
+        else {
+
+            StartCoroutine(DelayedLoad(1f, "SinglePlayerMobile"));
+        }
+
+        
     }
 
     void size56click() {
-        Debug.Log("clickety clik on 56");
-        StartCoroutine(DelayedLoad(1f, "SinglePlayerMobile"));
+        if (TutorialCheck.isOn == true) {
+            StartCoroutine(DelayedLoad(1f, "MobileTutorial"));
+        }
+        else {
+            StartCoroutine(DelayedLoad(1f, "SinglePlayerMobile"));
+        }
     }
 
 

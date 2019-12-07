@@ -64,7 +64,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         checkStoneEffect(elements);
     }
 
-    void checkStoneEffect(List<GridElementGUI> elements) {
+    public void checkStoneEffect(List<GridElementGUI> elements) {
         if (effect != "Stone")
             return;
 
@@ -225,6 +225,11 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
             setEffectGraphics();
             return;
         }
+    }
+
+    public void setEffect(string effect) {
+        this.effect = effect;
+        setEffectGraphics();
     }
     #endregion
 }

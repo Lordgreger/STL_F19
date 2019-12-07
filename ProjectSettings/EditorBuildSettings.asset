@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SinglePlayerMobile.unity
     guid: cbe7f914c5948074fa18edb20d979482
+  - enabled: 1
+    path: Assets/Scenes/MobileTutorial.unity
+    guid: f54bdbe3d2715cd42a68006be011916a
   m_configObjects: {}
