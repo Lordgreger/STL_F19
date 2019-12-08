@@ -109,6 +109,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1471860467076727060}
   explosionTime: 0.75
+  pointPrefab: {fileID: 7051464680291166973, guid: 9d79b46d18ff4bd418d44853350d9286,
+    type: 3}
 --- !u!223 &6834993577535900013
 Canvas:
   m_ObjectHideFlags: 0

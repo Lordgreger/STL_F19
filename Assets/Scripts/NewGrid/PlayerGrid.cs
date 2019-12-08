@@ -22,6 +22,7 @@ public class PlayerGrid : MonoBehaviour {
     public GridElementGUI[,] elements = new GridElementGUI[3,3];
     public Image levelCounterRef;
     public Sprite[] levelCounterImages = new Sprite[6];
+    public RectTransform score;
 
     public int level;
     int levelUpCount;

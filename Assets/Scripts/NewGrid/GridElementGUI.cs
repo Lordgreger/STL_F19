@@ -22,6 +22,7 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
     public GameObject stoneExplosion;
     public GameObject bombImageRef;
     public GameObject stoneImageRef;
+    public GameObject selectedImageRef;
     public Animator animator;
 
     private void Start() {
@@ -165,19 +166,23 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         Color c = Color.HSVToRGB(0, 0, 1);
         //Debug.Log("Color = " + c);
         imageRef.color = Color.HSVToRGB(0, 0, selectedDarknessVal);
+        selectedImageRef.SetActive(true);
         setEffectGraphics();
     }
 
     public void resetSelected() {
         //Debug.Log("Resets selected");
         imageRef.color = Color.HSVToRGB(0, 0, 1);
+        selectedImageRef.SetActive(false);
         setEffectGraphics();
     }
 
     public void explode() {
         //Debug.Log("Explode");
         float delay = Random.Range(0f, 0.15f);
-        Instantiate(explosionPrefabs[val - 1], this.transform).GetComponent<GridElementExplosion>().StartExplosion(delay);
+        GridElementExplosion gee = Instantiate(explosionPrefabs[val - 1], this.transform).GetComponent<GridElementExplosion>();
+        gee.pointTarget = gridController.score;
+        gee.StartExplosion(delay);
     }
 
     void setEffectGraphics() {

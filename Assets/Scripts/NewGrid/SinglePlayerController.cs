@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro; 
 
 public class SinglePlayerController : MonoBehaviour {
@@ -64,7 +65,7 @@ public class SinglePlayerController : MonoBehaviour {
         timerRef.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, relation * timerTotalWidth);
         //Debug.Log("Time left: " + time);
 
-        if (relation < 0.5) {
+        if (relation < 0.15) {
             timerAnimator.SetBool("Blink", true);
         }
         else {
@@ -123,6 +124,10 @@ public class SinglePlayerController : MonoBehaviour {
     }
 
     #endregion
+
+    public void BackToMenu() {
+        SceneManager.LoadScene("MainMenu");
+    }
 
     public void DebugMsg() {
         Debug.Log("Got Pressed!");

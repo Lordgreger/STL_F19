@@ -35,6 +35,9 @@ public class SinglePlayerTutorialController : MonoBehaviour {
 
     public Animator swipeyAmim;
 
+    public RectTransform timerRef;
+    public Animator timerAnimator;
+
     int currentTarget;
     public GridElementGUI[,] elements;
     List<GridElementGUI> selectedElements;
@@ -546,20 +549,20 @@ public class SinglePlayerTutorialController : MonoBehaviour {
 
     public class TutorialState7Timer : TutorialState {
         public TutorialState7Timer(SinglePlayerTutorialController sptc) : base(sptc) { }
+        float time;
 
-        void HandleMouseRelease() {
-            if (Input.GetMouseButtonUp(0)) {
-                sptc.printSelected();
-                if (sptc.selectedElements.Count > 0) {
-                    if (sptc.CheckSelected()) {
-                        sptc.explodeReroll();
-                        Exit();
-                    }
-                    else {
-                        sptc.shakeSelected();
-                    }
-                }
-                sptc.ResetSelected();
+        void UpdateTimer(float time) {
+            //Debug.Log("gt: " + gameTime + " tl: " + time);
+            float relation = (time / 60f);
+            //Debug.Log(relation);
+            sptc.timerRef.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, relation * 445);
+            //Debug.Log("Time left: " + time);
+
+            if (relation < 0.5) {
+                sptc.timerAnimator.SetBool("Blink", true);
+            }
+            else {
+                sptc.timerAnimator.SetBool("Blink", false);
             }
         }
 
@@ -568,13 +571,19 @@ public class SinglePlayerTutorialController : MonoBehaviour {
             sptc.overlayImage.raycastTarget = true;
             sptc.targetAnimator.Play("TargetPop");
             sptc.overlayImage.sprite = sptc.overlayTimer;
+            time = 10f;
+            UpdateTimer(time);
             //set timer til at være 10 sekunder og lad dem se tiden rinde ud mens de intet kan gøre for at stoppe det (muahahahah >:D)
             //exit når tid er slut
 
         }
 
         public override void Update() {
-            HandleMouseRelease();
+            time -= Time.deltaTime;
+            UpdateTimer(time);
+            if (time <= 0f) {
+                Exit();
+            }
         }
 
         public override void Exit() {
@@ -586,22 +595,6 @@ public class SinglePlayerTutorialController : MonoBehaviour {
     public class TutorialState8EndScreen : TutorialState {
         public TutorialState8EndScreen(SinglePlayerTutorialController sptc) : base(sptc) { }
 
-        void HandleMouseRelease() {
-            if (Input.GetMouseButtonUp(0)) {
-                sptc.printSelected();
-                if (sptc.selectedElements.Count > 0) {
-                    if (sptc.CheckSelected()) {
-                        sptc.explodeReroll();
-                        Exit();
-                    }
-                    else {
-                        sptc.shakeSelected();
-                    }
-                }
-                sptc.ResetSelected();
-            }
-        }
-
         public override void Enter() {
             sptc.setTarget(14);
 
@@ -612,7 +605,7 @@ public class SinglePlayerTutorialController : MonoBehaviour {
         }
 
         public override void Update() {
-            HandleMouseRelease();
+
         }
 
         public override void Exit() {
