@@ -18,7 +18,7 @@ public class GridElementExplosion : MonoBehaviour {
         animator.SetTrigger("Explode");
         Destroy(gameObject, explosionTime);
 
-        if (pointPrefab != null)
+        if (pointPrefab != null && pointTarget != null)
             Instantiate(pointPrefab, transform.parent).GetComponent<PointController>().target = pointTarget;
     }
 }

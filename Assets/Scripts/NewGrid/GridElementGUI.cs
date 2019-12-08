@@ -181,7 +181,8 @@ public class GridElementGUI : MonoBehaviour, IPointerEnterHandler, IPointerDownH
         //Debug.Log("Explode");
         float delay = Random.Range(0f, 0.15f);
         GridElementExplosion gee = Instantiate(explosionPrefabs[val - 1], this.transform).GetComponent<GridElementExplosion>();
-        gee.pointTarget = gridController.score;
+        if (gridController != null)
+            gee.pointTarget = gridController.score;
         gee.StartExplosion(delay);
     }
 

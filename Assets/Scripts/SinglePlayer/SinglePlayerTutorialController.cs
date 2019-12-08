@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SinglePlayerTutorialController : MonoBehaviour {
 
@@ -20,6 +21,8 @@ public class SinglePlayerTutorialController : MonoBehaviour {
     public Image swipey;
     public Image TargetTile;
 
+    public GameObject endScreen;
+
     public Sprite target0;
     public Sprite target1;
     public Sprite target2;
@@ -32,6 +35,7 @@ public class SinglePlayerTutorialController : MonoBehaviour {
     public Sprite overlayStone;
     public Sprite overlayTimer;
     public Sprite overlayLevel;
+    public Sprite overlayEnd;
 
     public Animator swipeyAmim;
 
@@ -159,6 +163,10 @@ public class SinglePlayerTutorialController : MonoBehaviour {
     #endregion
 
     #region Misc
+    public void goToGame() {
+        SceneManager.LoadScene("SinglePlayerMobile");
+    }
+
     void setTarget(int val) {
         currentTarget = val;
         targetText.text = val.ToString();
@@ -596,11 +604,8 @@ public class SinglePlayerTutorialController : MonoBehaviour {
         public TutorialState8EndScreen(SinglePlayerTutorialController sptc) : base(sptc) { }
 
         public override void Enter() {
-            sptc.setTarget(14);
-
-            sptc.overlayImage.gameObject.SetActive(false);
-            sptc.targetAnimator.Play("TargetPop");
-            sptc.swipeyAmim.gameObject.SetActive(false);
+            sptc.endScreen.SetActive(true);
+            sptc.overlayImage.sprite = sptc.overlayEnd;
 
         }
 

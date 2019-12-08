@@ -56,6 +56,8 @@ public class MenuScript : MonoBehaviour
     }
 
     void size45click() {
+        Size45.Play("size45AnimationImage");
+        size56Button.interactable = false;
         if (TutorialCheck.isOn == true) {
             StartCoroutine(DelayedLoad(1f, "MobileTutorial"));
         }
@@ -68,11 +70,13 @@ public class MenuScript : MonoBehaviour
     }
 
     void size56click() {
+        Size56.Play("size56AnimationImage");
+        size45Button.interactable = false;
         if (TutorialCheck.isOn == true) {
-            StartCoroutine(DelayedLoad(1f, "MobileTutorial"));
+            StartCoroutine(DelayedLoad(0.5f, "MobileTutorial"));
         }
         else {
-            StartCoroutine(DelayedLoad(1f, "SinglePlayerMobile"));
+            StartCoroutine(DelayedLoad(0.5f, "SinglePlayerMobile"));
         }
     }
 
